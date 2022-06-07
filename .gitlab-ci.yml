@@ -3,11 +3,11 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - ~/.npm
-    - .jest
+
 stages:
   - deploy
 before_script:
-  - npm install --global expo-cli
+  - npm install --global expo-cli eas-cli
   - npm ci
 expo-deployments:
   stage: deploy
@@ -15,3 +15,4 @@ expo-deployments:
     - apk add --no-cache bash
     - npx expo login -u "norbertomat" -p "TNG!5f27JiAm*n/"
     - npx expo publish --non-interactive
+    - EAS_NO_VCS=1 npx eas-cli build -p android --non-interactive --profile preview
