@@ -6,7 +6,7 @@ android-deploy:
     - master
   script:
     - npm install --global expo-cli eas-cli > test.txt
-    - echo test.txt
+    - cat test.txt
     - npm ci --cache .npm --prefer-offline
     - apk add --no-cache bash
     - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
