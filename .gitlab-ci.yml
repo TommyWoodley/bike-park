@@ -10,6 +10,7 @@ before_script:
   - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
 
 publish-to-expo:
+  - stage: publish
   - npx expo publish --non-interactive
 
 generate-apk:
