@@ -5,14 +5,9 @@ cache:
     - ~/.npm
     - .jest
 stages:
-  - test
   - deploy
 before_script:
   - npm ci
-jest-tests:
-  stage: test
-  script:
-    - npx jest --ci
 expo-deployments:
   stage: deploy
   script:
