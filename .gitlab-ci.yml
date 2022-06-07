@@ -7,6 +7,7 @@ cache:
 stages:
   - deploy
 before_script:
+  - npm install --global expo-cli
   - npm ci
 expo-deployments:
   stage: deploy
