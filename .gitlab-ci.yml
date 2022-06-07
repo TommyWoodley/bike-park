@@ -6,7 +6,6 @@ android-deploy:
     - master
   script:
     - npm install --global expo-cli eas-cli
-    - cd Frontend
     - npm ci --cache .npm --prefer-offline
     - apk add --no-cache bash
     - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
