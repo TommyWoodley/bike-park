@@ -13,4 +13,5 @@ expo-deployments:
   script:
     - apk add --no-cache bash
     - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
+    - Y
     - npx expo publish --non-interactive
