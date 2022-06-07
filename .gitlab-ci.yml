@@ -9,4 +9,4 @@ android-deploy:
     - npm ci --cache .npm --prefer-offline
     - apk add --no-cache bash
     - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
-    - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview
+    - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk.txt
