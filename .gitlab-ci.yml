@@ -1,14 +1,20 @@
-android-deploy:
-  stage: build
-  image: node:alpine
-  only:
-    - staging
-    - master
+image: node:alpine
+
+stages:
+  - publish
+  - generate
+
+before_script:
+  - npm install --global expo-cli eas-cli
+  - npm ci --cache .npm --prefer-offline
+  - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
+
+publish-to-expo:
+  - npx expo publish --non-interactive
+
+generate-apk:
+  stage: generate
   script:
-    - npm install --global expo-cli eas-cli > test.txt
-    - cat test.txt
-    - echo $( tail -n 1 test.txt )
-    - npm ci --cache .npm --prefer-offline
     - apk add --no-cache bash
-    - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
-    #- EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk.txt
+    - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk.txt
+    - echo $( tail -n 1 apk.txt )
