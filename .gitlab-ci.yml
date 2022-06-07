@@ -1,18 +1,13 @@
-image: node:alpine
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - ~/.npm
-
-stages:
-  - deploy
-before_script:
-  - npm install --global expo-cli eas-cli
-  - npm ci --cache .npm --prefer-offline
-expo-deployments:
-  stage: deploy
+android-deploy:
+  stage: build
+  image: node:alpine
+  only:
+    - staging
+    - master
   script:
+    - npm install --global expo-cli eas-cli
+    - cd Frontend
+    - npm ci --cache .npm --prefer-offline
     - apk add --no-cache bash
     - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
-    #- npx expo publish --non-interactive
     - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview
