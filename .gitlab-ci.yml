@@ -44,5 +44,6 @@ stages:
 set-link-variables:
   stage: deploy
   script:
+    apt install curl
     curl https://cli-assets.heroku.com/install.sh | sh
     heroku config:set APK_LINK=$(cat apk.txt) --app bikepark42
