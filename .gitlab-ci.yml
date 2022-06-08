@@ -1,8 +1,6 @@
 image: node:alpine
 
 stages:
-  - write
-  - read
   - generate
   - deploy
 
@@ -11,16 +9,6 @@ stages:
     - npm install --global expo-cli eas-cli
     - npm ci --cache .npm --prefer-offline
     - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
-
-write-to-file:
-  stage: write
-  script:
-    - echo "pkasjbdlasj" >> apk.txt
-
-read-from-file:
-  stage: read
-  script:
-    - cat apk.txt
 
 generate-link-to-expo:
   extends: .before_script_template
@@ -48,3 +36,4 @@ deploy-to-heroku:
   script:
     - cat expo-link.txt
     - cat apk.txt
+    - dpl --provider=heroku --app=bikepark42 --api-key=<$HEROKU_API_KEY>
