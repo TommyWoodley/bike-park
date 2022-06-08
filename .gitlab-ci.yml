@@ -14,12 +14,17 @@ publish-to-expo:
   extends: .before_script_template
   stage: publish
   script:
-    - npx expo publish --non-interactive
+    - echo "please work" > test.txt
+    #- npx expo publish --non-interactive
+  artifacts:
+    paths:
+      - test.txt
 
 generate-apk:
   extends: .before_script_template
   stage: generate
   script:
-    - apk add --no-cache bash
-    - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk.txt
-    - echo $( tail -n 1 apk.txt )
+    - cat test.txt
+    #- apk add --no-cache bash
+    #- EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk.txt
+    #- echo $( tail -n 1 apk.txt )
