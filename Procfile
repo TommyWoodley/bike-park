@@ -1,1 +1,0 @@
-web: cd bikepark42 && node downloads.js
