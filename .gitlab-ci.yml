@@ -15,6 +15,7 @@ generate-link-to-expo:
   stage: generate
   script:
     - npx expo publish --non-interactive > expo-link-output.txt
+    - cat expo-link-output.txt
     - echo $( tail -n 1 expo-link-output.txt ) > expo-link.txt
   artifacts:
     paths:
@@ -36,4 +37,4 @@ deploy-to-heroku:
   script:
     - cat expo-link.txt
     - cat apk.txt
-    - dpl --provider=heroku --app=bikepark42 --api-key=<$HEROKU_API_KEY>
+    #- dpl --provider=heroku --app=bikepark42 --api-key=<$HEROKU_API_KEY>

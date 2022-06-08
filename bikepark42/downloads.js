@@ -17,7 +17,7 @@ let port = process.env.PORT;
 if (port == null || port == "") {
   port = 8000;
 }
-downloads.listen(process.env.PORT);
+downloads.listen(port);
 
 downloads.use(logger('dev'));
 downloads.use(express.json());
