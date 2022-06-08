@@ -1,1 +1,1 @@
-web: node downloads.js
+web: node ./bikepark42/downloads.js
