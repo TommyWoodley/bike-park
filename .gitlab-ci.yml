@@ -14,8 +14,8 @@ publish-to-expo:
   stage: generate
   only:
     changes:
-      - !bikepark42/*
-      - !.gitlab-ci.yml
+      - "!bikepark42/*"
+      - "!.gitlab-ci.yml"
   script:
     - npx expo publish --non-interactive
 
