@@ -1,3 +1,4 @@
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {FlatList, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {firebase} from "./config";
 import {useEffect, useState} from "react";
@@ -85,6 +86,7 @@ export default function App() {
                     </View>
                 </View>
             )}/>
+          <MapView style={{height: '50%', width: '100%'}} provider={PROVIDER_GOOGLE} showsUserLocation={true} />
         </View>
     )
 }
