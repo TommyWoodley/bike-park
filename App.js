@@ -2,13 +2,32 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {FlatList, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {firebase} from "./config";
 import {useEffect, useState} from "react";
+import MapViewDirections from 'react-native-maps-directions';
+import * as Location from 'expo-location';
+
 
 export default function App() {
   const [locations, setLocations] = useState([]);
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
+  const [currentLat, setCurrentLat] = useState(51.4960469);
+  const [currentLong, setCurrentLong] = useState(-0.1790737);
+  const [destLat, setDestLat] = useState(0);
+  const [destLong, setDestLong] = useState(0);
   const [desc, setDesc] = useState('');
   const fireRef = firebase.firestore().collection('locations');
+
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                return;
+            }
+            let location = await Location.getCurrentPositionAsync({});
+            setCurrentLat(location.coords.latitude);
+            setCurrentLong(location.coords.longitude);
+        })();
+    }, []);
 
   //fetch or read data from firestore
   useEffect(() => {
@@ -95,9 +114,22 @@ export default function App() {
                         }}
                         title = {marker.desc}
                         icon={require('./marker_icon.png')}
+                        onPress = {e => {
+                            setDestLat(e.nativeEvent.coordinate.latitude)
+                            setDestLong(e.nativeEvent.coordinate.longitude)
+
+                            // console.log(e.nativeEvent.coordinate)
+                        }}
                     />
                 ))
                 }
+                <MapViewDirections
+                    origin={{latitude: currentLat, longitude: currentLong}}
+                    destination={{latitude: destLat, longitude: destLong}}
+                    apikey={'AIzaSyDx-ARe9YIdlEyEzI8-KFaS2BnSCAXIp_I'}
+                    strokeWidth={7}
+                    strokeColor="blue"
+                />
             </MapView>
         </View>
     )
