@@ -25,8 +25,8 @@ generate-apk:
   stage: generate
   only:
     changes:
-      - !bikepark42/*
-      - !.gitlab-ci.yml
+      - "!bikepark42/*"
+      - "!.gitlab-ci.yml"
   script:
     - apk add --no-cache bash
     - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk-output.txt
