@@ -16,6 +16,7 @@ publish-to-expo:
     changes:
       - "!bikepark42/*"
       - "!.gitlab-ci.yml"
+      - "*"
   script:
     - npx expo publish --non-interactive
 
@@ -27,6 +28,7 @@ generate-apk:
     changes:
       - "!bikepark42/*"
       - "!.gitlab-ci.yml"
+      - "*"
   script:
     - apk add --no-cache bash
     - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk-output.txt
@@ -50,6 +52,7 @@ set-link-variables:
     changes:
       - "!bikepark42/*"
       - "!.gitlab-ci.yml"
+      - "*"
   script:
     - apt-get update
     - apt-get install curl -y
