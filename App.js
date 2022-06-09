@@ -7,6 +7,7 @@ export default function App() {
   const [locations, setLocations] = useState([]);
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
+  const [desc, setDesc] = useState('');
   const fireRef = firebase.firestore().collection('locations');
 
   //fetch or read data from firestore
@@ -17,9 +18,9 @@ export default function App() {
             querySnapshot => {
               const locations = []
               querySnapshot.forEach((doc) => {
-                const {latcoord, longcoord} = doc.data()
+                const {latcoord, longcoord, desc} = doc.data()
                 locations.push({
-                  id: doc.id, latcoord, longcoord,
+                  id: doc.id, latcoord, longcoord, desc,
                 })
               })
               setLocations(locations);
@@ -34,6 +35,7 @@ export default function App() {
       //get the timestamp
       const timestamp = firebase.firestore.FieldValue.serverTimestamp();
       const data = {
+        desc: desc,
         latcoord: lat,
         longcoord: long,
         createdAt: timestamp
@@ -43,6 +45,7 @@ export default function App() {
           .then(() => {
             setLat(0);
             setLong(0);
+            setDesc('');
             Keyboard.dismiss();
           })
           .catch((error) => {
@@ -70,6 +73,14 @@ export default function App() {
                     underlineColorAndroid='transparent'
                     autoCapitalize='none'
                 />
+                <TextInput
+                    style={styles.input}
+                    placeholder='Description'
+                    onChangeText={(heading) => setDesc(heading)}
+                    value={desc}
+                    underlineColorAndroid='transparent'
+                    autoCapitalize='none'
+                />
                 <TouchableOpacity style={styles.button} onPress={addLoc}>
                     <Text>Add</Text>
                 </TouchableOpacity>
@@ -82,7 +93,8 @@ export default function App() {
                             latitude: Number(marker.latcoord),
                             longitude: Number(marker.longcoord)
                         }}
-                        title = {marker.lat}
+                        title = {marker.desc}
+                        icon={require('./marker_icon.png')}
                     />
                 ))
                 }
