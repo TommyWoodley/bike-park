@@ -5,6 +5,5 @@ block content
   p Welcome to #{"BikePark"}
   a(href='https://expo.dev/@norbertomat/Biker?serviceType=classic&distribution=expo-go') Expo QR
   script.
-    let apkLink = process.env.APK_LINK;
-    console.log(apkLink);
-  a(href=apkLink) APK Link
+    console.log(process.env.APK_LINK);
+  a(href=process.env.APK_LINK) APK Link
