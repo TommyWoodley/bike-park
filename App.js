@@ -74,19 +74,19 @@ export default function App() {
                     <Text>Add</Text>
                 </TouchableOpacity>
             </View>
-            <FlatList data={locations} numColumns={1} renderItem={({item}) => (
-                <View>
-                    <View style={styles.innerContainer}>
-                        <Text style={styles.itemHeading}>
-                            {item.lat.toUpperCase()}
-                        </Text>
-                        <Text style={styles.itemHeading}>
-                            {item.long.toUpperCase()}
-                        </Text>
-                    </View>
-                </View>
-            )}/>
-          <MapView style={{height: '50%', width: '100%'}} provider={PROVIDER_GOOGLE} showsUserLocation={true} />
+            <MapView style={{height: '50%', width: '100%'}} provider={PROVIDER_GOOGLE} showsUserLocation={true}>
+                {locations[0] != null && locations.map((marker, index) => (
+                    <MapView.Marker
+                        key = {index}
+                        coordinate = {{
+                            latitude: marker.lat,
+                            longitude: marker.long
+                        }}
+                        title = {marker.lat}
+                    />
+                ))
+                }
+            </MapView>
         </View>
     )
 }
