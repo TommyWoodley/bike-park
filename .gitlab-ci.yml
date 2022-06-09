@@ -1,42 +1,50 @@
 stages:
-  - generate
+#  - generate
   - deploy
 
-.before_script_template:
-  before_script:
-    - npm install --global expo-cli eas-cli
-    - npm ci --cache .npm --prefer-offline
-    - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
+#.before_script_template:
+#  before_script:
+#    - npm install --global expo-cli eas-cli
+#    - npm ci --cache .npm --prefer-offline
+#    - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
+#
+#generate-link-to-expo:
+#  image: node:alpine
+#  extends: .before_script_template
+#  stage: generate
+#  script:
+#    - npx expo publish --non-interactive > expo-link-output.txt
+#    - cat expo-link-output.txt
+#    - echo $( tail -n 1 expo-link-output.txt ) > expo-link.txt
+#  artifacts:
+#    paths:
+#      - expo-link.txt
+#
+#generate-apk:
+#  image: node:alpine
+#  extends: .before_script_template
+#  stage: generate
+#  script:
+#    - apk add --no-cache bash
+#    - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk-output.txt
+#    - echo $( tail -n 1 apk-output.txt ) > apk.txt
+#  artifacts:
+#    paths:
+#      - apk.txt
+#
+#deploy-to-heroku:
+#  stage: deploy
+#  script:
+#    - apt-get update -yq
+#    - apt-get install -y ruby ruby-dev rubygems-integration git curl
+#    - cd bikepark42
+#    - gem install dpl
+#    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
 
-generate-link-to-expo:
-  image: node:alpine
-  extends: .before_script_template
-  stage: generate
-  script:
-    - npx expo publish --non-interactive > expo-link-output.txt
-    - cat expo-link-output.txt
-    - echo $( tail -n 1 expo-link-output.txt ) > expo-link.txt
-  artifacts:
-    paths:
-      - expo-link.txt
-
-generate-apk:
-  image: node:alpine
-  extends: .before_script_template
-  stage: generate
-  script:
-    - apk add --no-cache bash
-    - EAS_NO_VCS=1 npx eas-cli build -p android --profile preview > apk-output.txt
-    - echo $( tail -n 1 apk-output.txt ) > apk.txt
-  artifacts:
-    paths:
-      - apk.txt
-
-deploy-to-heroku:
+set-link-variables:
   stage: deploy
   script:
-    - apt-get update -yq
-    - apt-get install -y ruby ruby-dev rubygems-integration git curl
-    - cd bikepark42
-    - gem install dpl
-    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+    - apt-get update
+    - apt-get install curl -y
+    - curl https://cli-assets.heroku.com/install.sh | sh
+    - heroku config:set APK_LINK=test --app bikepark42
