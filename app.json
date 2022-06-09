@@ -2,6 +2,7 @@
   "expo": {
     "name": "Are you a Biker??",
     "slug": "Biker",
+    "owner": "bikepark42",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
