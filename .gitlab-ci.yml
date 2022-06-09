@@ -47,4 +47,5 @@ set-link-variables:
     - apt-get update
     - apt-get install curl -y
     - curl https://cli-assets.heroku.com/install.sh | sh
-    - heroku config:set APK_LINK=test --app bikepark42
+    - heroku config:set APK_LINK=$(cat apk.txt) --app bikepark42
+    - heroku config:set EXPO_LINK=$(cat expo-link.txt) --app bikepark42
