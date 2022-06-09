@@ -11,7 +11,7 @@ stages:
 
 test:
   script:
-    - echo $( https://expo.dev/artifacts/eas/nSFahRiWAna7Vz7dTrLcVy.apk ) > apk.txt
+    - echo "https://expo.dev/artifacts/eas/nSFahRiWAna7Vz7dTrLcVy.apk" > apk.txt
   artifacts:
     paths:
       - apk.txt
