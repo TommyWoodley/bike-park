@@ -46,6 +46,10 @@ deploy-to-heroku:
 
 set-link-variables:
   stage: deploy
+  only:
+    changes:
+      - "!bikepark42/*"
+      - "!.gitlab-ci.yml"
   script:
     - apt-get update
     - apt-get install curl -y
