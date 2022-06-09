@@ -30,6 +30,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDx-ARe9YIdlEyEzI8-KFaS2BnSCAXIp_I"
+        }
+      },
       "package": "com.drp42.bikepark"
     },
     "web": {
