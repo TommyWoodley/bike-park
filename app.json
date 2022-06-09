@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Are you a Biker??",
-    "slug": "Biker",
+    "name": "Bike Park",
+    "slug": "DRP_42",
     "owner": "bikepark42",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/bike-park-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/bike-park-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
