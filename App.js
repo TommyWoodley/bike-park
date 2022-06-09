@@ -17,9 +17,9 @@ export default function App() {
             querySnapshot => {
               const locations = []
               querySnapshot.forEach((doc) => {
-                const {lat, long} = doc.data()
+                const {latcoord, longcoord} = doc.data()
                 locations.push({
-                  id: doc.id, lat, long,
+                  id: doc.id, latcoord, longcoord,
                 })
               })
               setLocations(locations);
@@ -34,8 +34,8 @@ export default function App() {
       //get the timestamp
       const timestamp = firebase.firestore.FieldValue.serverTimestamp();
       const data = {
-        lat: lat,
-        long: long,
+        latcoord: lat,
+        longcoord: long,
         createdAt: timestamp
       };
       fireRef
@@ -79,8 +79,8 @@ export default function App() {
                     <MapView.Marker
                         key = {index}
                         coordinate = {{
-                            latitude: marker.lat,
-                            longitude: marker.long
+                            latitude: Number(marker.latcoord),
+                            longitude: Number(marker.longcoord)
                         }}
                         title = {marker.lat}
                     />
