@@ -5,10 +5,10 @@
     "owner": "bikepark42",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/bike-park-logo.png",
+    "icon": "./src/assets/images/bike-park-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/bike-park-logo.png",
+      "image": "./src/assets/images/bike-park-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/bike-park-logo.png",
+        "foregroundImage": "./src/assets/images/bike-park-logo.png",
         "backgroundColor": "#FFFFFF"
       },
       "config": {
@@ -38,7 +38,7 @@
       "package": "com.drp42.bikepark"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./src/assets/images/favicon.png"
     }
   }
 }
