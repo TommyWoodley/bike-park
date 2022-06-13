@@ -1,19 +1,19 @@
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import {Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, Image} from 'react-native';
 import {firebase} from "./config";
 import {useEffect, useState} from "react";
+import { useRef } from "react";
 import MapViewDirections from 'react-native-maps-directions';
 import * as Location from 'expo-location';
 
 
 export default function App() {
+    const mapRef = useRef(null);
   const [locations, setLocations] = useState([]);
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
-  const [currentLat, setCurrentLat] = useState(51.4960469);
-  const [currentLong, setCurrentLong] = useState(-0.1790737);
-  const [destLat, setDestLat] = useState(0);
-  const [destLong, setDestLong] = useState(0);
+  const [currentLat, setCurrentLat] = useState(51.498317);
+  const [currentLong, setCurrentLong] = useState(-0.176923);
   const [desc, setDesc] = useState('');
   const fireRef = firebase.firestore().collection('locations');
 
@@ -37,9 +37,9 @@ export default function App() {
             querySnapshot => {
               const locations = []
               querySnapshot.forEach((doc) => {
-                const {latcoord, longcoord, desc} = doc.data()
+                const {coord, desc} = doc.data()
                 locations.push({
-                  id: doc.id, latcoord, longcoord, desc,
+                  id: doc.id, coord, desc
                 })
               })
               setLocations(locations);
@@ -75,62 +75,36 @@ export default function App() {
 
     return (
         <View style={{flex:1}}>
-            <View style={styles.formContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder='Latitude'
-                    onChangeText={(heading) => setLat(heading)}
-                    value={lat}
-                    underlineColorAndroid='transparent'
-                    autoCapitalize='none'
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder='Longitude'
-                    onChangeText={(heading) => setLong(heading)}
-                    value={long}
-                    underlineColorAndroid='transparent'
-                    autoCapitalize='none'
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder='Description'
-                    onChangeText={(heading) => setDesc(heading)}
-                    value={desc}
-                    underlineColorAndroid='transparent'
-                    autoCapitalize='none'
-                />
-                <TouchableOpacity style={styles.button} onPress={addLoc}>
-                    <Text>Add</Text>
-                </TouchableOpacity>
-            </View>
-            <MapView style={{height: '50%', width: '100%'}} provider={PROVIDER_GOOGLE} showsUserLocation={true}>
+            <MapView
+                style={{height: '100%', width: '100%'}}
+                provider={PROVIDER_GOOGLE}
+                showsUserLocation={true}
+                ref={mapRef}
+                initialRegion={{
+                    latitude: currentLat,
+                    longitude: currentLong,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01
+                }}>
                 {locations[0] != null && locations.map((marker, index) => (
                     <MapView.Marker
                         key = {index}
                         coordinate = {{
-                            latitude: Number(marker.latcoord),
-                            longitude: Number(marker.longcoord)
+                            latitude: Number(marker.coord.latitude),
+                            longitude: Number(marker.coord.longitude)
                         }}
-                        title = {marker.desc}
-                        onPress = {e => {
-                            setDestLat(e.nativeEvent.coordinate.latitude)
-                            setDestLong(e.nativeEvent.coordinate.longitude)
-
-                            // console.log(e.nativeEvent.coordinate)
-                        }}
+                        anchor={{x:0.5, y:0.9}}
                     >
-                        <CustomMarker/>
+                        <View>
+                            <Image
+                                source={require('./assets/parking-marker.png')}
+                                style={{width: 50, height: 50}}
+                                resizeMode="center"
+                            />
+                        </View>
                     </MapView.Marker>
                 ))
                 }
-                <MapViewDirections
-                    origin={{latitude: currentLat, longitude: currentLong}}
-                    destination={{latitude: destLat, longitude: destLong}}
-                    apikey={'AIzaSyDx-ARe9YIdlEyEzI8-KFaS2BnSCAXIp_I'}
-                    strokeWidth={7}
-                    strokeColor="blue"
-                />
             </MapView>
         </View>
     )
@@ -138,8 +112,8 @@ export default function App() {
 
 function CustomMarker() {
     return (
-        <View style={styles.marker}>
-            <Text>Tokyo</Text>
+        <View>
+
         </View>
     )
 }
