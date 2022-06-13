@@ -1,5 +1,5 @@
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import {FlatList, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {firebase} from "./config";
 import {useEffect, useState} from "react";
 import MapViewDirections from 'react-native-maps-directions';
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     button:{
         height:47,
         borderRadius:5,
-        backgroundColor:'#788eec',
+        backgroundColor:'#49ec11',
         width:80,
         alignItems:'center',
         justifyContent:'center',
