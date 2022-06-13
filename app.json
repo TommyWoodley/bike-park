@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/bike-park-logo.png",
         "backgroundColor": "#FFFFFF"
       },
       "config": {
