@@ -9,7 +9,7 @@ stages:
     - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
 
 publish-to-expo:
-  image: node:8.12-alpine
+  image: node:alpine
   extends: .before_script_template
   stage: generate
   only:
@@ -21,7 +21,7 @@ publish-to-expo:
     - npx expo publish --non-interactive
 
 generate-apk:
-  image: node:8.12-alpine
+  image: node:alpine
   extends: .before_script_template
   stage: generate
   only:
