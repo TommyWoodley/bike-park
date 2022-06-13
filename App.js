@@ -113,14 +113,15 @@ export default function App() {
                             longitude: Number(marker.longcoord)
                         }}
                         title = {marker.desc}
-                        icon={require('./marker_icon.png')}
                         onPress = {e => {
                             setDestLat(e.nativeEvent.coordinate.latitude)
                             setDestLong(e.nativeEvent.coordinate.longitude)
 
                             // console.log(e.nativeEvent.coordinate)
                         }}
-                    />
+                    >
+                        <CustomMarker/>
+                    </MapView.Marker>
                 ))
                 }
                 <MapViewDirections
@@ -131,6 +132,14 @@ export default function App() {
                     strokeColor="blue"
                 />
             </MapView>
+        </View>
+    )
+}
+
+function CustomMarker() {
+    return (
+        <View style={styles.marker}>
+            <Text>Tokyo</Text>
         </View>
     )
 }
@@ -187,6 +196,12 @@ const styles = StyleSheet.create({
         marginTop:5,
         fontSize:20,
         marginLeft:14
+    },
+    marker: {
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+        backgroundColor:'#ffffff',
+        borderColor:'#eee',
     }
 })
 
