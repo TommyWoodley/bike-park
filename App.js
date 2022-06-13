@@ -17,6 +17,7 @@ export default function App() {
   const [desc, setDesc] = useState('');
   const fireRef = firebase.firestore().collection('locations');
 
+    // Ask for location permission
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
