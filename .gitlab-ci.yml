@@ -13,6 +13,8 @@ publish-to-expo:
   extends: .before_script_template
   stage: generate
   only:
+    refs:
+      - master
     changes:
       - "!bikepark42/*"
       - "!.gitlab-ci.yml"
@@ -25,6 +27,8 @@ generate-apk:
   extends: .before_script_template
   stage: generate
   only:
+    refs:
+      - master
     changes:
       - "!bikepark42/*"
       - "!.gitlab-ci.yml"
@@ -39,6 +43,9 @@ generate-apk:
 
 deploy-to-heroku:
   stage: deploy
+  only:
+    refs:
+      - master
   script:
     - apt-get update -yq
     - apt-get install -y ruby ruby-dev rubygems-integration git curl
@@ -49,6 +56,8 @@ deploy-to-heroku:
 set-link-variables:
   stage: deploy
   only:
+    refs:
+      - master
     changes:
       - "!bikepark42/*"
       - "!.gitlab-ci.yml"
