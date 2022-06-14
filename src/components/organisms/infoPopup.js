@@ -1,4 +1,6 @@
 import {Image, StyleSheet, Text, View} from "react-native";
+import Star from "../atoms/stars";
+import StarRating from "../molecules/starRating";
 
 function InfoPopup({desc, image}) {
 
@@ -7,7 +9,10 @@ function InfoPopup({desc, image}) {
             <Image
                 style={{width:'50%', height:'100%', resizeMode:'contain'}}
                 source={{uri: image}} />
-            <Text>{desc}</Text>
+            <View>
+                <StarRating/>
+                <Text>{desc}</Text>
+            </View>
         </View>);
 }
 

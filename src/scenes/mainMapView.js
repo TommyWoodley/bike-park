@@ -43,7 +43,6 @@ export default function MainMapView() {
             let location = await Location.getCurrentPositionAsync({});
             setCurrentLat(location.coords.latitude);
             setCurrentLong(location.coords.longitude);
-            console.log("hello" + location.coords.latitude + location.coords.longitude);
         })();
     }, []);
 
@@ -58,7 +57,7 @@ export default function MainMapView() {
         <View style={{flex: 1}}>
             <InfoPopup style={{height: '30%', width: '100%'}} desc={selectedDesc} image={image}/>
             <MapView
-                style={{height: fullScreen ? '100%' : '80%', width: '100%'}}
+                style={{height: fullScreen ? '100%' : '80%',width: '100%'}}
                 provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
                 ref={mapView}
