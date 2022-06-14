@@ -1,10 +1,16 @@
-import {StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
 
-const InfoPopup = ({desc}) =>
-    <View style={styles.bottomView}>
-        <Text>Image</Text>
-        <Text>{desc}</Text>
-    </View>
+function InfoPopup({desc, image}) {
+
+    return (
+        <View style={styles.bottomView}>
+            <Image
+                style={{width:'50%', height:'100%', resizeMode:'contain'}}
+                source={{uri: image}} />
+            <Text>{desc}</Text>
+        </View>);
+}
+
 
 export default InfoPopup;
 
@@ -19,11 +25,15 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     bottomView: {
+        alignItems: 'center',
         backgroundColor: '#ffffff',
-        justifyContent: 'center',
-        padding: 15,
+        flexDirection:"row",
+        justifyContent: 'flex-start',
+        //padding: 15,
         borderRadius: 15,
-        margin: 5,
+        // margin: 5,
+        height: '30%',
+        width: '100%',
         position: 'absolute', //Here is the trick
         bottom: 0, //Here is the trick
     },

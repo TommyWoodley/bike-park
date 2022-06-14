@@ -4,9 +4,9 @@ import {Keyboard} from "react-native";
 export function onResult(querySnapshot, setLocations) {
     const locations = []
     querySnapshot.forEach((doc) => {
-        const {coord, desc} = doc.data()
+        const {coord, desc, img} = doc.data()
         locations.push({
-            id: doc.id, coord, desc
+            id: doc.id, coord, desc, img
         })
     })
     setLocations(locations);

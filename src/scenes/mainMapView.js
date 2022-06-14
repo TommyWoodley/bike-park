@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import * as Location from 'expo-location';
 import {ParkingMarker} from "../components/molecules";
 import InfoPopup from "../components/organisms/infoPopup";
+import {getDownloadURL, getStorage, ref} from "firebase/storage";
 
 const fireRef = firebase.firestore().collection('locations');
 
@@ -16,6 +17,8 @@ export default function MainMapView() {
     const [currentLong, setCurrentLong] = useState(-0.176923);
 
     const [selectedDesc, setSelectedDesc] = useState('');
+
+    const [image, setImage] = useState('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
 
     // Ask for location permission
     useEffect(() => {
@@ -39,7 +42,7 @@ export default function MainMapView() {
 
     return (
         <View style={{flex: 1}}>
-            <InfoPopup style={{height: '30%', width: '100%'}} desc={selectedDesc}/>
+            <InfoPopup style={{height: '30%', width: '100%'}} desc={selectedDesc} image={image}/>
             <MapView
                 style={{height: fullScreen ? '100%' : '80%', width: '100%'}}
                 provider={PROVIDER_GOOGLE}
@@ -57,6 +60,17 @@ export default function MainMapView() {
                         onClick={() => {
                             setFullScreen(() => false);
                             setSelectedDesc(marker.desc);
+                            const storage = getStorage()
+                            const reference = ref(storage, '/' + marker.img);
+
+                            getDownloadURL(reference)
+                                .then((x) => {
+                                    setImage(x);
+                                })
+                                .catch(e => {
+                                    console.log(marker.desc + 'getting downloadURL of image error =>  ' + '/' + marker.img, e);
+                                    setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
+                                })
                         }}
                     />
                 ))
