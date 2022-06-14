@@ -7,7 +7,6 @@ import * as Location from 'expo-location';
 import {ParkingMarker} from "../components/molecules";
 import InfoPopup from "../components/organisms/infoPopup";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
-import markerImage from "../components/atoms/markerImage";
 
 const fireRef = firebase.firestore().collection('locations');
 
