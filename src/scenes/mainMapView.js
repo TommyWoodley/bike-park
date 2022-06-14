@@ -18,7 +18,7 @@ export default function MainMapView() {
 
     const [selectedDesc, setSelectedDesc] = useState('');
 
-    const [image, setImage] = useState('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
+    const [image, setImage] = useState('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
 
     // Ask for location permission
     useEffect(() => {

@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
         // margin: 5,
         height: '30%',
         width: '100%',
-        position: 'absolute', //Here is the trick
-        bottom: 0, //Here is the trick
+        position: 'absolute',
+        bottom: 0,
     },
 });

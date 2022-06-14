@@ -5,7 +5,7 @@ const MarkerImage = () =>
     <Image
         source={require('../../assets/images/parking-marker.png')}
         style={{width: 50, height: 50}}
-        resizeMode="center"
+        resizeMode="contain"
     />;
 
 export default MarkerImage;
