@@ -1,27 +1,64 @@
 import {Image, StyleSheet, Text, View} from "react-native";
 import StarRating from "../molecules/starRating";
 import Lightbox from 'react-native-lightbox-v2';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import {useState} from "react";
 
-function InfoPopup({desc, image, numStars, numReviews}) {
+const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen}) => {
+    const [swipeDirection, setSwipeDirection] = useState('');
 
+    const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+
+    const figureHorizontalDirection = (delta) =>
+        delta > 0 ? SWIPE_RIGHT : SWIPE_LEFT;
+    const figureVerticalDirection = (delta) =>
+        delta > 0 ? SWIPE_DOWN : SWIPE_UP;
+
+    const detectSwipeDirection = ({dx, dy}) => {
+        return Math.abs(dx) > Math.abs(dy)
+            ? figureHorizontalDirection(dx)
+            : figureVerticalDirection(dy);
+    };
+
+    const onSwipe = (directionNull, gestureState) => {
+        const {dx, dy} = gestureState;
+        let direction = detectSwipeDirection({dx, dy});
+
+        switch (true) {
+            case direction === SWIPE_DOWN:
+                setSwipeDirection('down');
+                setFullscreen(true);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const config = {
+        velocityThreshold: 0.5,
+        directionalOffsetThreshold: 50,
+    };
     return (
         <View style={styles.bottomView}>
-            <View style={{ width:'45%', height:'80%', resizeMode:'contain', borderRadius:15}}>
-                <Lightbox navigator={navigator}>
+            <GestureRecognizer
+                style={styles.gridContainer}
+                onSwipe={(direction, state) => onSwipe(direction, state)}
+                config={config}>
+                <View style={{ width:'45%', height:'80%'}}>
                     <Image
-                        style={{ height: '100%', resizeMode:'contain'}}
+                        style={{ height: '100%', borderRadius:15, overflow:'hidden'}}
                         source={{ uri: image }}
                     />
-                </Lightbox>
-            </View>
-            <View style={{width:'4%'}}/>
-            <View style={{width:'45%'}}>
-                <StarRating
-                    score={numStars}
-                    num={numReviews}
-                />
-                <Text style={styles.sectionTitle}>{desc}</Text>
-            </View>
+                </View>
+                <View style={{width:'4%'}}/>
+                <View style={{width:'45%'}}>
+                    <StarRating
+                        score={numStars}
+                        num={numReviews}
+                    />
+                    <Text style={styles.sectionTitle}>{desc}</Text>
+                </View>
+            </GestureRecognizer>
         </View>);
 }
 
@@ -54,5 +91,11 @@ export const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '600',
         color: '#000000',
+    },
+    gridContainer: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        flexDirection: 'row',
     },
 });

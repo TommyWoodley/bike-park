@@ -56,7 +56,7 @@ export default function MainMapView() {
 
     return (
         <View style={{flex: 1}}>
-            <InfoPopup style={{height: '25%', width: '100%'}} desc={selectedDesc} image={image} numStars={selectedNumStars} numReviews={selectedNumReviews}/>
+            <InfoPopup style={{height: '25%', width: '100%'}} desc={selectedDesc} image={image} numStars={selectedNumStars} numReviews={selectedNumReviews} setFullscreen={setFullScreen}/>
             <MapView
                 style={{height: fullScreen ? '100%' : '75%',width: '100%'}}
                 provider={PROVIDER_GOOGLE}
@@ -73,6 +73,7 @@ export default function MainMapView() {
                         key={index}
                         coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
                         onClick={() => {
+                            setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                             setFullScreen(() => false);
                             setSelectedNumReviews(marker.reviews.length)
                             let totalStars = 0
