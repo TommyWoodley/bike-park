@@ -25,6 +25,7 @@ export default function MainMapView() {
     const [locations, setLocations] = useState([]);
     const [currentLat, setCurrentLat] = useState(0);
     const [currentLong, setCurrentLong] = useState(0);
+    const [selected, setSelected] = useState();
 
     const [selectedDesc, setSelectedDesc] = useState('');
     const [selectedNumStars, setSelectedNumStars] = useState(0);
@@ -80,7 +81,11 @@ export default function MainMapView() {
                     <ParkingMarker
                         key={index}
                         coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
+                        setSelected={setSelected}
                         onClick={() => {
+                            if (selected != null) {
+                                selected.deselect();
+                            }
                             setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                             setFullScreen(() => false);
                             setSelectedNumReviews(marker.reviews.length)

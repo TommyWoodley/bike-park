@@ -44,19 +44,28 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen}) => {
                 style={styles.gridContainer}
                 onSwipe={(direction, state) => onSwipe(direction, state)}
                 config={config}>
-                <View style={{ width:'45%', height:'80%'}}>
-                    <Image
-                        style={{ height: '100%', borderRadius:15, overflow:'hidden'}}
-                        source={{ uri: image }}
-                    />
-                </View>
-                <View style={{width:'4%'}}/>
-                <View style={{width:'45%'}}>
-                    <StarRating
-                        score={numStars}
-                        num={numReviews}
-                    />
-                    <Text style={styles.sectionTitle}>{desc}</Text>
+                <Image source={require('../../assets/images/grey-bar.png')} style={{
+                    width: 50,
+                    height: 20,
+                    resizeMode:'contain',
+                }}/>
+                <View style={{
+                    flexDirection: 'row'
+                }}>
+                    <View style={{ width:'45%', height:'80%'}}>
+                        <Image
+                            style={{ height: '100%', borderRadius:15, overflow:'hidden'}}
+                            source={{ uri: image }}
+                        />
+                    </View>
+                    <View style={{width:'4%'}}/>
+                    <View style={{width:'45%'}}>
+                        <StarRating
+                            score={numStars}
+                            num={numReviews}
+                        />
+                        <Text style={styles.sectionTitle}>{desc}</Text>
+                    </View>
                 </View>
             </GestureRecognizer>
         </View>);
@@ -69,7 +78,7 @@ export const styles = StyleSheet.create({
     bottomView: {
         alignItems: 'flex-start',
         backgroundColor: '#ffffff',
-        flexDirection:"row",
+        flexDirection:"column",
         height: '25%',
         width: '100%',
         paddingTop: 0,
@@ -86,7 +95,7 @@ export const styles = StyleSheet.create({
     gridContainer: {
         width: '100%',
         height: '100%',
-        justifyContent: 'center',
-        flexDirection: 'row',
+        flexDirection: 'column',
+        alignItems:'center',
     },
 });
