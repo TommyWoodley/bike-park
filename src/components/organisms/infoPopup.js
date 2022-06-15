@@ -1,12 +1,18 @@
 import {Image, StyleSheet, Text, View} from "react-native";
 import StarRating from "../molecules/starRating";
+import Lightbox from 'react-native-lightbox-v2';
 
 function InfoPopup({desc, image, numStars, numReviews}) {
 
     return (
         <View style={styles.bottomView}>
-            <View style={{ width:'45%', height:'52%', resizeMode:'contain'}}>
-                <Image style={{width:'100%', height:'100%', borderRadius:15}} source={{uri: image}} />
+            <View style={{ width:'45%', height:'80%', resizeMode:'contain', borderRadius:15}}>
+                <Lightbox navigator={navigator}>
+                    <Image
+                        style={{ height: '100%', resizeMode:'contain'}}
+                        source={{ uri: image }}
+                    />
+                </Lightbox>
             </View>
             <View style={{width:'4%'}}/>
             <View style={{width:'45%'}}>
