@@ -7,7 +7,6 @@ import * as Location from 'expo-location';
 import {ParkingMarker} from "../components/molecules";
 import InfoPopup from "../components/organisms/infoPopup";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
-import markerImage from "../components/atoms/markerImage";
 
 const fireRef = firebase.firestore().collection('locations');
 
@@ -25,13 +24,43 @@ export default function MainMapView() {
     const [locations, setLocations] = useState([]);
     const [currentLat, setCurrentLat] = useState(0);
     const [currentLong, setCurrentLong] = useState(0);
-    const [selected, setSelected] = useState();
 
     const [selectedDesc, setSelectedDesc] = useState('');
     const [selectedNumStars, setSelectedNumStars] = useState(0);
     const [selectedNumReviews, setSelectedNumReviews] = useState(0);
 
     const [image, setImage] = useState('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
+
+    let markers = locations.map((marker, index) => (
+            <ParkingMarker
+                key={index}
+                coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
+                desc={marker.desc}
+                selectedDesc={selectedDesc}
+                onClick={() => {
+                    setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
+                    setFullScreen(() => false);
+                    setSelectedNumReviews(marker.reviews.length)
+                    let totalStars = 0
+                    marker.reviews.forEach((x, i) => totalStars += x.rating)
+                    setSelectedNumStars(totalStars / marker.reviews.length)
+                    setSelectedDesc(marker.desc);
+                    setCurrentLat(marker.coord.latitude);
+                    setCurrentLong(marker.coord.longitude);
+                    const storage = getStorage()
+                    const reference = ref(storage, '/' + marker.img);
+
+                    getDownloadURL(reference)
+                        .then((x) => {
+                            setImage(x);
+                        })
+                        .catch(e => {
+                            console.log(marker.desc + 'getting downloadURL of image error =>  ' + '/' + marker.img, e);
+                            setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
+                        })
+                }}
+            />
+        ));
 
     const mapView = createRef();
 
@@ -65,6 +94,7 @@ export default function MainMapView() {
                 numStars={selectedNumStars}
                 numReviews={selectedNumReviews}
                 setFullscreen={setFullScreen}
+                setSelectedDesc={setSelectedDesc}
             />
             <MapView
                 style={{height: fullScreen ? '100%' : '75%',width: '100%'}}
@@ -77,39 +107,7 @@ export default function MainMapView() {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01
                 }}>
-                {locations[0] != null && locations.map((marker, index) => (
-                    <ParkingMarker
-                        key={index}
-                        coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
-                        setSelected={setSelected}
-                        onClick={() => {
-                            if (selected != null) {
-                                selected.deselect();
-                            }
-                            setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
-                            setFullScreen(() => false);
-                            setSelectedNumReviews(marker.reviews.length)
-                            let totalStars = 0
-                            marker.reviews.forEach((x, i) => totalStars += x.rating)
-                            setSelectedNumStars(totalStars / marker.reviews.length)
-                            setSelectedDesc(marker.desc);
-                            setCurrentLat(marker.coord.latitude);
-                            setCurrentLong(marker.coord.longitude);
-                            const storage = getStorage()
-                            const reference = ref(storage, '/' + marker.img);
-
-                            getDownloadURL(reference)
-                                .then((x) => {
-                                    setImage(x);
-                                })
-                                .catch(e => {
-                                    console.log(marker.desc + 'getting downloadURL of image error =>  ' + '/' + marker.img, e);
-                                    setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
-                                })
-                        }}
-                    />
-                ))
-                }
+                {markers}
             </MapView>
         </View>
     )

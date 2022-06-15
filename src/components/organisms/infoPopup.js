@@ -1,10 +1,9 @@
 import {Image, StyleSheet, Text, View} from "react-native";
 import StarRating from "../molecules/starRating";
-import Lightbox from 'react-native-lightbox-v2';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
 
-const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen}) => {
+const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen, setSelectedDesc}) => {
     const [swipeDirection, setSwipeDirection] = useState('');
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
@@ -28,6 +27,7 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen}) => {
             case direction === SWIPE_DOWN:
                 setSwipeDirection('down');
                 setFullscreen(true);
+                setSelectedDesc("");
                 break;
             default:
                 break;

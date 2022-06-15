@@ -1,10 +1,10 @@
 import React from 'react';
 import {Image} from 'react-native';
 
-function MarkerImage({size}) {
+function MarkerImage({isSelected}) {
     return (<Image
-        source={require('../../assets/images/parking-marker.png')}
-        style={{width: size, height: size}}
+        source={isSelected ? require('../../assets/images/parking-marker-selected.png') : require('../../assets/images/parking-marker.png')}
+        style={{width: isSelected ? 60 : 50, height: isSelected ? 60 : 50}}
         resizeMode="contain"
     />);
 }

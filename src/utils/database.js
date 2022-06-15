@@ -19,7 +19,7 @@ export function onResult(querySnapshot, setLocations) {
         })
 
         locations.push({
-            id: doc.id, coord, desc, img, reviews
+            id: doc.id, coord, desc, img, reviews,
         })
     })
     setLocations(locations);

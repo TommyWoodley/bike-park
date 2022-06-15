@@ -1,19 +1,6 @@
 import {View, Text, StyleSheet} from "react-native";
 import Star from "../atoms/stars";
 
-//let stars = [];
-// 		// Loop 5 times
-// 		for (var i = 1; i <= 5; i++) {
-// 			// Set the path to filled stars
-// 			let path = require('./star-filled.png');
-// 			// If ratings is lower, set the path to unfilled stars
-// 			if (i > ratingObj.ratings) {
-// 				path = require('./star-0.png');
-// 			}
-// 			// Push the Image tag in the stars array
-// 			stars.push((<Image style={styles.image} source={path} />));
-// 		}
-
 function StarRating({score, num}) {
     let stars = [];
 
