@@ -66,22 +66,13 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen}) => {
 export default InfoPopup;
 
 export const styles = StyleSheet.create({
-    popup: {
-        backgroundColor: '#e5e5e5',
-        padding: 15,
-        borderRadius: 15,
-        margin: 5,
-        marginHorizontal: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
     bottomView: {
         alignItems: 'flex-start',
         backgroundColor: '#ffffff',
         flexDirection:"row",
         height: '25%',
         width: '100%',
-        paddingTop:15,
+        paddingTop: 0,
         justifyContent: 'center',
         borderRadius: 15,
         position: 'absolute',
