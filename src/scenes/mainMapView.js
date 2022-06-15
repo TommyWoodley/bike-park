@@ -26,6 +26,8 @@ export default function MainMapView() {
     const [currentLong, setCurrentLong] = useState(0);
 
     const [selectedDesc, setSelectedDesc] = useState('');
+    const [selectedNumStars, setSelectedNumStars] = useState(0);
+    const [selectedNumReviews, setSelectedNumReviews] = useState(0);
 
     const [image, setImage] = useState('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
 
@@ -54,7 +56,7 @@ export default function MainMapView() {
 
     return (
         <View style={{flex: 1}}>
-            <InfoPopup style={{height: '25%', width: '100%'}} desc={selectedDesc} image={image} numStars={3.25} numReviews={5}/>
+            <InfoPopup style={{height: '25%', width: '100%'}} desc={selectedDesc} image={image} numStars={selectedNumStars} numReviews={selectedNumReviews}/>
             <MapView
                 style={{height: fullScreen ? '100%' : '75%',width: '100%'}}
                 provider={PROVIDER_GOOGLE}
@@ -72,6 +74,10 @@ export default function MainMapView() {
                         coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
                         onClick={() => {
                             setFullScreen(() => false);
+                            setSelectedNumReviews(marker.reviews.length)
+                            let totalStars = 0
+                            marker.reviews.forEach((x, i) => totalStars += x.rating)
+                            setSelectedNumStars(totalStars / marker.reviews.length)
                             setSelectedDesc(marker.desc);
                             setCurrentLat(marker.coord.latitude);
                             setCurrentLong(marker.coord.longitude);
