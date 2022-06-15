@@ -7,7 +7,6 @@ import * as Location from 'expo-location';
 import {ParkingMarker} from "../components/molecules";
 import InfoPopup from "../components/organisms/infoPopup";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
-import markerImage from "../components/atoms/markerImage";
 
 const fireRef = firebase.firestore().collection('locations');
 
@@ -55,9 +54,9 @@ export default function MainMapView() {
 
     return (
         <View style={{flex: 1}}>
-            <InfoPopup style={{height: '30%', width: '100%'}} desc={selectedDesc} image={image}/>
+            <InfoPopup style={{height: '25%', width: '100%'}} desc={selectedDesc} image={image} numStars={3.25} numReviews={5}/>
             <MapView
-                style={{height: fullScreen ? '100%' : '80%',width: '100%'}}
+                style={{height: fullScreen ? '100%' : '75%',width: '100%'}}
                 provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
                 ref={mapView}

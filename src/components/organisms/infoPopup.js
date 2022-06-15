@@ -1,17 +1,20 @@
 import {Image, StyleSheet, Text, View} from "react-native";
-import Star from "../atoms/stars";
 import StarRating from "../molecules/starRating";
 
-function InfoPopup({desc, image}) {
+function InfoPopup({desc, image, numStars, numReviews}) {
 
     return (
         <View style={styles.bottomView}>
-            <Image
-                style={{width:'50%', height:'100%', resizeMode:'contain'}}
-                source={{uri: image}} />
-            <View>
-                <StarRating/>
-                <Text>{desc}</Text>
+            <View style={{ width:'45%', height:'52%', resizeMode:'contain'}}>
+                <Image style={{width:'100%', height:'100%', borderRadius:15}} source={{uri: image}} />
+            </View>
+            <View style={{width:'4%'}}/>
+            <View style={{width:'45%'}}>
+                <StarRating
+                    score={numStars}
+                    num={numReviews}
+                />
+                <Text style={styles.sectionTitle}>{desc}</Text>
             </View>
         </View>);
 }
@@ -30,16 +33,20 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     bottomView: {
-        alignItems: 'center',
+        alignItems: 'flex-start',
         backgroundColor: '#ffffff',
         flexDirection:"row",
-        justifyContent: 'flex-start',
-        //padding: 15,
-        borderRadius: 15,
-        // margin: 5,
-        height: '30%',
+        height: '25%',
         width: '100%',
+        paddingTop:15,
+        justifyContent: 'center',
+        borderRadius: 15,
         position: 'absolute',
         bottom: 0,
+    },
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: '600',
+        color: '#000000',
     },
 });
