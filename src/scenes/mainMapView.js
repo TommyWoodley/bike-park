@@ -41,11 +41,8 @@ export default function MainMapView() {
                 key={index}
                 coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
                 desc={marker.desc}
-                selectedDesc={selectedDesc}
+                isSelected={marker.desc === selectedDesc}
                 onClick={async () => {
-                    let location = await Location.getCurrentPositionAsync({});
-                    setGeoLat(location.coords.latitude)
-                    setGeoLong(location.coords.longitude)
                     setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                     setFullScreen(() => false);
                     setSelectedNumReviews(marker.reviews.length)
@@ -55,6 +52,7 @@ export default function MainMapView() {
                     setSelectedDesc(marker.desc);
                     setCurrentLat(marker.coord.latitude);
                     setCurrentLong(marker.coord.longitude);
+                    setDuration('~');
                     const storage = getStorage()
                     const reference = ref(storage, '/' + marker.img);
 
@@ -66,6 +64,10 @@ export default function MainMapView() {
                             console.log(marker.desc + 'getting downloadURL of image error =>  ' + '/' + marker.img, e);
                             setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
                         })
+
+                    let location = await Location.getCurrentPositionAsync({});
+                    setGeoLat(location.coords.latitude)
+                    setGeoLong(location.coords.longitude)
                 }}
             />
         ));
@@ -125,6 +127,10 @@ export default function MainMapView() {
                     onReady={result => {
                         setDuration(Math.round(result.duration))
                     }}
+                    onError={error => {
+                        console.log('why are you making me deal with this norberto')
+                    }}
+                    
                 />
                 {markers}
             </MapView>

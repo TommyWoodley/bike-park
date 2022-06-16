@@ -3,7 +3,7 @@ import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
 
-const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen, duration}) => {
+const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelectedDesc, duration}) => {
     const [swipeDirection, setSwipeDirection] = useState('');
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
@@ -52,7 +52,7 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen, duration})
                 <View style={{
                     flexDirection: 'row'
                 }}>
-                    <View style={{ width:'45%', height:'80%'}}>
+                    <View style={{ width:'45%', height:'88%'}}>
                         <Image
                             style={{ height: '100%', borderRadius:15, overflow:'hidden'}}
                             source={{ uri: image }}
@@ -65,7 +65,7 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen, duration})
                             num={numReviews}
                         />
                         <Text style={styles.sectionTitle}>{desc}</Text>
-                        <Text style={styles.sectionTitle}>{`Duration: ${duration} min cycle.`}</Text>
+                        <Text style={styles.sectionMain}>{`Duration: ${duration} min cycle.`}</Text>
                     </View>
                 </View>
             </GestureRecognizer>
@@ -89,7 +89,12 @@ export const styles = StyleSheet.create({
         bottom: 0,
     },
     sectionTitle: {
-        fontSize: 24,
+        fontSize: 22,
+        fontWeight: '600',
+        color: '#000000',
+    },
+    sectionMain: {
+        fontSize: 15,
         fontWeight: '600',
         color: '#000000',
     },
