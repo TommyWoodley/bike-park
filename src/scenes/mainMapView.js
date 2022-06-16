@@ -25,6 +25,7 @@ export default function MainMapView() {
     const [locations, setLocations] = useState([]);
     const [currentLat, setCurrentLat] = useState(0);
     const [currentLong, setCurrentLong] = useState(0);
+    const [done, setDone] = useState(false);
 
     const [geoLat, setGeoLat] = useState(0);
     const [geoLong, setGeoLong] = useState(0);
@@ -43,6 +44,7 @@ export default function MainMapView() {
                 desc={marker.desc}
                 isSelected={marker.desc === selectedDesc}
                 onClick={async () => {
+                    setDone(false);
                     setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                     setFullScreen(() => false);
                     setSelectedNumReviews(marker.reviews.length)
@@ -68,6 +70,7 @@ export default function MainMapView() {
                     let location = await Location.getCurrentPositionAsync({});
                     setGeoLat(location.coords.latitude)
                     setGeoLong(location.coords.longitude)
+                    setDone(true);
                 }}
             />
         ));
@@ -122,7 +125,7 @@ export default function MainMapView() {
                     destination={{ latitude: currentLat, longitude: currentLong }}
                     apikey={"AIzaSyDx-ARe9YIdlEyEzI8-KFaS2BnSCAXIp_I"}
                     mode={"BICYCLING"}
-                    strokeWidth={0}
+                    strokeWidth={selectedDesc === '' && !done? 0 : 5}
                     strokeColor="hotpink"
                     onReady={result => {
                         setDuration(Math.round(result.duration))
