@@ -122,7 +122,7 @@ export default function MainMapView() {
                     destination={{ latitude: currentLat, longitude: currentLong }}
                     apikey={"AIzaSyDx-ARe9YIdlEyEzI8-KFaS2BnSCAXIp_I"}
                     mode={"BICYCLING"}
-                    strokeWidth={3}
+                    strokeWidth={0}
                     strokeColor="hotpink"
                     onReady={result => {
                         setDuration(Math.round(result.duration))

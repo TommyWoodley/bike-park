@@ -1,11 +1,9 @@
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
 import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
 
 const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelectedDesc, duration}) => {
-    const [swipeDirection, setSwipeDirection] = useState('');
-
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
 
     const figureHorizontalDirection = (delta) =>
@@ -25,9 +23,17 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
 
         switch (true) {
             case direction === SWIPE_DOWN:
-                setSwipeDirection('down');
-                setFullscreen(true);
-                setSelectedDesc("");
+                if (!modalVisible) {
+                    setFullscreen(true);
+                    setSelectedDesc("");
+                } else {
+                    setModalVisible(!modalVisible)
+                }
+                break;
+            case direction === SWIPE_UP:
+                if (!modalVisible) {
+                    setModalVisible(true)
+                }
                 break;
             default:
                 break;
@@ -35,9 +41,11 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
     };
 
     const config = {
-        velocityThreshold: 0.5,
-        directionalOffsetThreshold: 50,
+        velocityThreshold: 0.1,
+        directionalOffsetThreshold: 30,
     };
+    const [modalVisible, setModalVisible] = useState(false);
+
     return (
         <View style={styles.bottomView}>
             <GestureRecognizer
@@ -52,11 +60,45 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                 <View style={{
                     flexDirection: 'row'
                 }}>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            setModalVisible(!modalVisible);
+                        }}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <View styles={{height:'5%', width:'100%', flexDirection: 'row', alignItems: 'left'}}>
+                                    <Pressable
+                                        onPress={() => setModalVisible(!modalVisible)}
+                                    >
+                                        <Image
+                                            style={{ height: '30%', width: '15%', resizeMode:'contain' }}
+                                            source={require('../../assets/images/white-x.png')}
+                                        />
+                                    </Pressable>
+                                </View>
+                                <Image
+                                    style={{ height: '50%', width: '100%', resizeMode:'contain' }}
+                                    source={{ uri: image }}
+                                />
+
+                            </View>
+
+                        </View>
+
+                    </Modal>
                     <View style={{ width:'45%', height:'88%'}}>
-                        <Image
-                            style={{ height: '100%', borderRadius:15, overflow:'hidden'}}
-                            source={{ uri: image }}
-                        />
+                        <Pressable
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <Image
+                                style={{ height: '100%', borderRadius:15, overflow:'hidden'}}
+                                source={{ uri: image }}
+                            />
+                        </Pressable>
                     </View>
                     <View style={{width:'4%'}}/>
                     <View style={{width:'45%'}}>
@@ -103,5 +145,29 @@ export const styles = StyleSheet.create({
         height: '100%',
         flexDirection: 'column',
         alignItems:'center',
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    modalView: {
+        marginTop: 100,
+        height: '100%',
+        width: '100%',
+        backgroundColor: "black",
+        borderRadius: 30,
+        padding: 0,
+        paddingTop: 20,
+        paddingBottom: 120,
+        //alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
     },
 });
