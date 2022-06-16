@@ -86,7 +86,6 @@ export default function MainMapView() {
         })();
     }, []);
 
-    //fetch or read data from firestore
     useEffect(() => {
         fireRef
             .orderBy('createdAt')
