@@ -3,7 +3,7 @@ import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
 
-const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen, setSelectedDesc}) => {
+const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen, duration}) => {
     const [swipeDirection, setSwipeDirection] = useState('');
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
@@ -65,6 +65,7 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen, setSelecte
                             num={numReviews}
                         />
                         <Text style={styles.sectionTitle}>{desc}</Text>
+                        <Text style={styles.sectionTitle}>{`Duration: ${duration} min cycle.`}</Text>
                     </View>
                 </View>
             </GestureRecognizer>

@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 import {ParkingMarker} from "../components/molecules";
 import InfoPopup from "../components/organisms/infoPopup";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
+import MapViewDirections from "react-native-maps-directions";
 
 const fireRef = firebase.firestore().collection('locations');
 
@@ -25,6 +26,10 @@ export default function MainMapView() {
     const [currentLat, setCurrentLat] = useState(0);
     const [currentLong, setCurrentLong] = useState(0);
 
+    const [geoLat, setGeoLat] = useState(0);
+    const [geoLong, setGeoLong] = useState(0);
+    const [duration, setDuration] = useState(0);
+
     const [selectedDesc, setSelectedDesc] = useState('');
     const [selectedNumStars, setSelectedNumStars] = useState(0);
     const [selectedNumReviews, setSelectedNumReviews] = useState(0);
@@ -37,7 +42,10 @@ export default function MainMapView() {
                 coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
                 desc={marker.desc}
                 selectedDesc={selectedDesc}
-                onClick={() => {
+                onClick={async () => {
+                    let location = await Location.getCurrentPositionAsync({});
+                    setGeoLat(location.coords.latitude)
+                    setGeoLong(location.coords.longitude)
                     setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                     setFullScreen(() => false);
                     setSelectedNumReviews(marker.reviews.length)
@@ -95,6 +103,7 @@ export default function MainMapView() {
                 numReviews={selectedNumReviews}
                 setFullscreen={setFullScreen}
                 setSelectedDesc={setSelectedDesc}
+                duration={duration}
             />
             <MapView
                 style={{height: fullScreen ? '100%' : '75%',width: '100%'}}
@@ -107,6 +116,17 @@ export default function MainMapView() {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01
                 }}>
+                <MapViewDirections
+                    origin={{ latitude: geoLat, longitude: geoLong }}
+                    destination={{ latitude: currentLat, longitude: currentLong }}
+                    apikey={"AIzaSyDx-ARe9YIdlEyEzI8-KFaS2BnSCAXIp_I"}
+                    mode={"BICYCLING"}
+                    strokeWidth={3}
+                    strokeColor="hotpink"
+                    onReady={result => {
+                        setDuration(Math.round(result.duration))
+                    }}
+                />
                 {markers}
             </MapView>
         </View>
