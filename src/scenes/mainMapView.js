@@ -34,6 +34,7 @@ export default function MainMapView() {
     const [selectedDesc, setSelectedDesc] = useState('');
     const [selectedNumStars, setSelectedNumStars] = useState(0);
     const [selectedNumReviews, setSelectedNumReviews] = useState(0);
+    const [selectedCapacity, setSelectedCapacity] = useState(0);
 
     const [image, setImage] = useState('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
 
@@ -51,6 +52,7 @@ export default function MainMapView() {
                     let totalStars = 0
                     marker.reviews.forEach((x, i) => totalStars += x.rating)
                     setSelectedNumStars(totalStars / marker.reviews.length)
+                    setSelectedCapacity(marker.capacity)
                     setSelectedDesc(marker.desc);
                     setCurrentLat(marker.coord.latitude);
                     setCurrentLong(marker.coord.longitude);
@@ -104,6 +106,7 @@ export default function MainMapView() {
                 desc={selectedDesc}
                 image={image}
                 numStars={selectedNumStars}
+                capacity={selectedCapacity}
                 numReviews={selectedNumReviews}
                 setFullscreen={setFullScreen}
                 setSelectedDesc={setSelectedDesc}
@@ -133,7 +136,7 @@ export default function MainMapView() {
                     onError={error => {
                         console.log('why are you making me deal with this norberto')
                     }}
-                    
+
                 />
                 {markers}
             </MapView>

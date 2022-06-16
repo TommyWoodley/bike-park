@@ -4,7 +4,7 @@ import {Keyboard} from "react-native";
 export function onResult(querySnapshot, setLocations) {
     const locations = []
     querySnapshot.forEach(async (doc) => {
-        const {coord, desc, img} = doc.data()
+        const {coord, desc, img, capacity} = doc.data()
 
         let snapshot = await firebase.firestore()
             .collection('locations')
@@ -19,7 +19,7 @@ export function onResult(querySnapshot, setLocations) {
         })
 
         locations.push({
-            id: doc.id, coord, desc, img, reviews,
+            id: doc.id, coord, desc, img, reviews, capacity
         })
     })
     setLocations(locations);
