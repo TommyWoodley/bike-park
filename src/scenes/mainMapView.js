@@ -11,15 +11,6 @@ import MapViewDirections from "react-native-maps-directions";
 
 const fireRef = firebase.firestore().collection('locations');
 
-// function animateMap(lat, lng, mapView) {
-//     mapView.animateToRegion({ // Takes a region object as parameter
-//         longitude: lat,
-//         latitude: lng,
-//         latitudeDelta: 0.4,
-//         longitudeDelta: 0.4,
-//     },1000);
-// }
-
 function getLink(mLat, mLong) {
     return 'https://www.google.com/maps/dir/?api=1&destination=' + mLat + '%2C' + mLong + '&travelmode=bicycling'
 }
@@ -40,6 +31,7 @@ export default function MainMapView() {
     const [selectedNumStars, setSelectedNumStars] = useState(0);
     const [selectedNumReviews, setSelectedNumReviews] = useState(0);
     const [selectedCapacity, setSelectedCapacity] = useState(0);
+    const [selectedShelter, setSelectedShelter] = useState(false);
 
     const [image, setImage] = useState('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
 
@@ -54,7 +46,8 @@ export default function MainMapView() {
                     setDone(false);
                     setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                     setFullScreen(() => false);
-                    setSelectedNumReviews(marker.reviews.length)
+                    setSelectedNumReviews(marker.reviews.length);
+                    setSelectedShelter(marker.shelter);
                     let totalStars = 0
                     marker.reviews.forEach((x, i) => totalStars += x.rating)
                     setSelectedNumStars(totalStars / marker.reviews.length)
@@ -119,6 +112,7 @@ export default function MainMapView() {
                 setSelectedDesc={setSelectedDesc}
                 duration={duration}
                 link={link}
+                shelter={selectedShelter}
             />
             <MapView
                 style={{height: fullScreen ? '100%' : '75%',width: '100%'}}

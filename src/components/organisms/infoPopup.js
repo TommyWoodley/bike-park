@@ -4,7 +4,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
 import * as Linking from 'expo-linking';
 
-const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelectedDesc, duration, capacity, link}) => {
+const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelectedDesc, duration, capacity, link, shelter}) => {
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
 
@@ -118,13 +118,39 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                         <View style={{flexDirection:'row', paddingTop: 5}}>
                             <Image source={require('../../assets/images/bike-park-icon.png')}
                                    style={styles.attributeIcon}/>
-                            <Text style={styles.attributeText}>{`${capacity} bays`}</Text>
+                            <Text style={{
+                                fontSize: 18,
+                                flex:7,
+                                paddingHorizontal: 5}}>
+                                {`${capacity} bays`}
+                            </Text>
+                            {/*<Pressable style={{*/}
+                            {/*    fontSize: 18,*/}
+                            {/*    flex:3,*/}
+                            {/*    paddingHorizontal: 5,*/}
+                            {/*    alignItems: 'center',*/}
+                            {/*    fontWeight: 'bold',*/}
+                            {/*    color:'white',*/}
+                            {/*    borderRadius: 20,*/}
+                            {/*    backgroundColor: '#ff0000',*/}
+                            {/*}}>*/}
+                            {/*    <Text style={styles.text}>FULL</Text>*/}
+                            {/*</Pressable>*/}
                         </View>
-                        <Pressable style={styles.button}
-                                   onPress={() => Linking.openURL(link)}
-                        >
-                            <Text style={styles.text}>GO</Text>
-                        </Pressable>
+                        <View style={{flexDirection: 'row', paddingTop: 10}}>
+                            <Image source={require('../../assets/images/bike-shelter.png')}
+                                   style={{width: 25, height: 25, alignContent: 'flex-start'}}/>
+                            <Image source={shelter ?
+                                require('../../assets/images/tick-icon.png') :
+                                require('../../assets/images/cross-icon.png')}
+                                   style={{width: 20, height:20, marginHorizontal: 5}}/>
+
+                            <Pressable style={styles.button}
+                                       onPress={() => Linking.openURL(link)}
+                            >
+                                <Text style={styles.text}>GO</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </GestureRecognizer>
@@ -189,30 +215,28 @@ export const styles = StyleSheet.create({
         elevation: 5
     },
     button: {
+        flex:1,
         alignItems: 'center',
         width: '50%',
-        alignSelf: 'flex-end',
-        justifyContent: 'center',
+        alignContent: 'flex-end',
+        justifyContent: 'flex-end',
         paddingVertical: 10,
-        paddingHorizontal: 0,
+        marginLeft: 20,
         borderRadius: 20,
-        elevation: 0,
-        marginTop:5,
         backgroundColor: '#426fda',
     },
     attributeIcon: {
         height:25,
         width:25,
-        flex:1
+        flex:2
     },
     attributeText: {
         fontSize: 18,
-        flex:4,
+        flex:7,
         paddingHorizontal: 5
     },
     text: {
         fontSize: 16,
-        lineHeight: 21,
         fontWeight: 'bold',
         letterSpacing: 0.25,
         color: 'white',
