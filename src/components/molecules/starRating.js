@@ -8,9 +8,9 @@ function StarRating({score, num}) {
         stars.push(<Star val={score - i} key={i}/>)
     }
 
-    return (<View style={{flexDirection: "row", alignItems: 'center', resizeMode:'contain'}}>
+    return (<View style={{flexDirection: "row", alignItems: 'flex-start', resizeMode:'contain'}}>
         {stars}
-        <Text>({num})</Text>
+        <Text style={{fontSize: 15}}>({num})</Text>
     </View>);
 }
 

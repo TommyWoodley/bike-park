@@ -20,15 +20,20 @@ const fireRef = firebase.firestore().collection('locations');
 //     },1000);
 // }
 
+function getLink(mLat, mLong) {
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + mLat + '%2C' + mLong + '&travelmode=bicycling'
+}
+
 export default function MainMapView() {
     const [fullScreen, setFullScreen] = useState(true);
     const [locations, setLocations] = useState([]);
-    const [currentLat, setCurrentLat] = useState(0);
-    const [currentLong, setCurrentLong] = useState(0);
+    const [currentLat, setCurrentLat] = useState(51.498936);
+    const [currentLong, setCurrentLong] = useState(-0.177112);
     const [done, setDone] = useState(false);
+    const [link, setLink] = useState('');
 
-    const [geoLat, setGeoLat] = useState(0);
-    const [geoLong, setGeoLong] = useState(0);
+    const [geoLat, setGeoLat] = useState(51.498936);
+    const [geoLong, setGeoLong] = useState(-0.177112);
     const [duration, setDuration] = useState(0);
 
     const [selectedDesc, setSelectedDesc] = useState('');
@@ -45,6 +50,7 @@ export default function MainMapView() {
                 desc={marker.desc}
                 isSelected={marker.desc === selectedDesc}
                 onClick={async () => {
+                    setLink(getLink(marker.coord.latitude, marker.coord.longitude));
                     setDone(false);
                     setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                     setFullScreen(() => false);
@@ -73,6 +79,7 @@ export default function MainMapView() {
                     setGeoLat(location.coords.latitude)
                     setGeoLong(location.coords.longitude)
                     setDone(true);
+
                 }}
             />
         ));
@@ -111,6 +118,7 @@ export default function MainMapView() {
                 setFullscreen={setFullScreen}
                 setSelectedDesc={setSelectedDesc}
                 duration={duration}
+                link={link}
             />
             <MapView
                 style={{height: fullScreen ? '100%' : '75%',width: '100%'}}

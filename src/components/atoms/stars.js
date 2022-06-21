@@ -29,9 +29,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FF00FF",
     },
     image: {
-        flex: 1,
-        width: 50,
-        height: 50,
+        width: 20,
+        height: 20,
         resizeMode:'contain'
     }
 });

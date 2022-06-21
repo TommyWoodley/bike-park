@@ -1,9 +1,10 @@
-import {Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
+import {Button, Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
 import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
+import * as Linking from 'expo-linking';
 
-const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelectedDesc, duration, capacity}) => {
+const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelectedDesc, duration, capacity, link}) => {
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
 
@@ -54,9 +55,9 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                 onSwipe={(direction, state) => onSwipe(direction, state)}
                 config={config}>
                 <Image source={require('../../assets/images/grey-bar.png')} style={{
-                    width: 50,
+                    width: 45,
                     height: 20,
-                    resizeMode:'contain',
+                    resizeMode:'stretch',
                 }}/>
                 <View style={{
                     flexDirection: 'row'
@@ -102,14 +103,28 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                         </Pressable>
                     </View>
                     <View style={{width:'4%'}}/>
-                    <View style={{width:'45%'}}>
+                    <View style={{width:'45%', flexDirection: 'column'}}>
                         <StarRating
                             score={numStars}
                             num={numReviews}
                         />
-                        <Text style={styles.sectionTitle}>{desc}</Text>
-                        <Text style={styles.sectionMain}>{`Duration: ${duration} min cycle.`}</Text>
-                        <Text style={styles.sectionMain}>{`Capacity: ${capacity} bikes.`}</Text>
+                        <Text numberOfLines={1} ellipsizeMode='tail'
+                        style={styles.sectionTitle}>{desc}</Text>
+                        <View style={{flexDirection:'row', paddingTop: 5}}>
+                            <Image source={require('../../assets/images/bike-icon.png')}
+                                   style={styles.attributeIcon}/>
+                            <Text style={styles.attributeText}>{`${duration} min`}</Text>
+                        </View>
+                        <View style={{flexDirection:'row', paddingTop: 5}}>
+                            <Image source={require('../../assets/images/bike-park-icon.png')}
+                                   style={styles.attributeIcon}/>
+                            <Text style={styles.attributeText}>{`${capacity} bays`}</Text>
+                        </View>
+                        <Pressable style={styles.button}
+                                   onPress={() => Linking.openURL(link)}
+                        >
+                            <Text style={styles.text}>GO</Text>
+                        </Pressable>
                     </View>
                 </View>
             </GestureRecognizer>
@@ -133,9 +148,10 @@ export const styles = StyleSheet.create({
         bottom: 0,
     },
     sectionTitle: {
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: '600',
         color: '#000000',
+        paddingTop: 5,
     },
     sectionMain: {
         fontSize: 15,
@@ -171,5 +187,34 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5
+    },
+    button: {
+        alignItems: 'center',
+        width: '50%',
+        alignSelf: 'flex-end',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 0,
+        borderRadius: 20,
+        elevation: 0,
+        marginTop:5,
+        backgroundColor: '#426fda',
+    },
+    attributeIcon: {
+        height:25,
+        width:25,
+        flex:1
+    },
+    attributeText: {
+        fontSize: 18,
+        flex:4,
+        paddingHorizontal: 5
+    },
+    text: {
+        fontSize: 16,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'white',
     },
 });
