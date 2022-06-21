@@ -16,7 +16,7 @@ function getLink(mLat, mLong) {
 }
 
 export default function MainMapView() {
-    const [fullScreen, setFullScreen] = useState(true);
+    const [fullScreen, setFullScreen] = useState('no');
     const [locations, setLocations] = useState([]);
     const [currentLat, setCurrentLat] = useState(51.498936);
     const [currentLong, setCurrentLong] = useState(-0.177112);
@@ -45,7 +45,7 @@ export default function MainMapView() {
                     setLink(getLink(marker.coord.latitude, marker.coord.longitude));
                     setDone(false);
                     setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
-                    setFullScreen(() => false);
+                    setFullScreen(() => 'popup');
                     setSelectedNumReviews(marker.reviews.length);
                     setSelectedShelter(marker.shelter);
                     let totalStars = 0
@@ -102,7 +102,9 @@ export default function MainMapView() {
     return (
         <View style={{flex: 1}}>
             <InfoPopup
-                style={{height: '25%', width: '100%'}}
+                style={{height: fullScreen === 'full' ? '40%' : '25%', width: '100%'}}
+                lat={currentLat}
+                long={currentLong}
                 desc={selectedDesc}
                 image={image}
                 numStars={selectedNumStars}
@@ -111,11 +113,12 @@ export default function MainMapView() {
                 setFullscreen={setFullScreen}
                 setSelectedDesc={setSelectedDesc}
                 duration={duration}
+                fullscreen={fullScreen}
                 link={link}
                 shelter={selectedShelter}
             />
-            <MapView
-                style={{height: fullScreen ? '100%' : '75%',width: '100%'}}
+            <MapView //fullScreen == '' ? '100%' : '60%'
+                style={{height: fullScreen === 'no' ? '100%' : (fullScreen === 'full' ? '60%' : '75%') ,width: '100%'}}
                 provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
                 ref={mapView}

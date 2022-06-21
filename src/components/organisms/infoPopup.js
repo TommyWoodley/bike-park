@@ -2,11 +2,14 @@ import {Button, Image, Modal, Pressable, StyleSheet, Text, View} from "react-nat
 import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
+import * as Clipboard from 'expo-clipboard'
 import * as Linking from 'expo-linking';
 
-const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelectedDesc, duration, capacity, link, shelter}) => {
+const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, setFullscreen,setSelectedDesc, duration, capacity, link, shelter}) => {
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+
+    const [pressed, setPressed] = useState(false);
 
     const figureHorizontalDirection = (delta) =>
         delta > 0 ? SWIPE_RIGHT : SWIPE_LEFT;
@@ -25,16 +28,22 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
 
         switch (true) {
             case direction === SWIPE_DOWN:
+                setPressed(false);
                 if (!modalVisible) {
-                    setFullscreen(true);
-                    setSelectedDesc("");
+                    if (fullscreen === 'full') {
+                        setFullscreen('popup');
+                    } else {
+                        setFullscreen('no');
+                        setSelectedDesc("");
+                    }
                 } else {
                     setModalVisible(!modalVisible)
                 }
                 break;
             case direction === SWIPE_UP:
+                setPressed(false);
                 if (!modalVisible) {
-                    setModalVisible(true)
+                    setFullscreen('full');
                 }
                 break;
             default:
@@ -48,8 +57,23 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
     };
     const [modalVisible, setModalVisible] = useState(false);
 
+    const copyToClipboard = async () => {
+        await Clipboard.setStringAsync(`${lat}, ${long}`);
+    };
+
     return (
-        <View style={styles.bottomView}>
+        <View style={{
+            alignItems: 'flex-start',
+            backgroundColor: '#ffffff',
+            flexDirection:"column",
+            height: fullscreen === 'full' ? '40%' : '25%',
+            width: '100%',
+            paddingTop: 0,
+            justifyContent: 'center',
+            borderRadius: 15,
+            position: 'absolute',
+            bottom: 0,
+        }}>
             <GestureRecognizer
                 style={styles.gridContainer}
                 onSwipe={(direction, state) => onSwipe(direction, state)}
@@ -60,7 +84,8 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                     resizeMode:'stretch',
                 }}/>
                 <View style={{
-                    flexDirection: 'row'
+                    flexDirection: 'row',
+                    height: fullscreen === 'full'? '55%' : '88%'
                 }}>
                     <Modal
                         animationType="slide"
@@ -83,7 +108,7 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                                     </Pressable>
                                 </View>
                                 <Image
-                                    style={{ height: '50%', width: '100%', resizeMode:'contain' }}
+                                    style={{ height: '40%', width: '100%', resizeMode:'contain' }}
                                     source={{ uri: image }}
                                 />
 
@@ -92,7 +117,9 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                         </View>
 
                     </Modal>
-                    <View style={{ width:'45%', height:'88%'}}>
+
+
+                    <View style={{ width:'45%', height: '90%'}}>
                         <Pressable
                             onPress={() => setModalVisible(!modalVisible)}
                         >
@@ -109,7 +136,7 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                             num={numReviews}
                         />
                         <Text numberOfLines={1} ellipsizeMode='tail'
-                        style={styles.sectionTitle}>{desc}</Text>
+                              style={styles.sectionTitle}>{desc}</Text>
                         <View style={{flexDirection:'row', paddingTop: 5}}>
                             <Image source={require('../../assets/images/bike-icon.png')}
                                    style={styles.attributeIcon}/>
@@ -120,22 +147,22 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                                    style={styles.attributeIcon}/>
                             <Text style={{
                                 fontSize: 18,
-                                flex:7,
+                                flex:4,
                                 paddingHorizontal: 5}}>
                                 {`${capacity} bays`}
                             </Text>
-                            {/*<Pressable style={{*/}
-                            {/*    fontSize: 18,*/}
-                            {/*    flex:3,*/}
-                            {/*    paddingHorizontal: 5,*/}
-                            {/*    alignItems: 'center',*/}
-                            {/*    fontWeight: 'bold',*/}
-                            {/*    color:'white',*/}
-                            {/*    borderRadius: 20,*/}
-                            {/*    backgroundColor: '#ff0000',*/}
-                            {/*}}>*/}
-                            {/*    <Text style={styles.text}>FULL</Text>*/}
-                            {/*</Pressable>*/}
+                            <Pressable style={{
+                                fontSize: 18,
+                                flex:3,
+                                paddingHorizontal: 5,
+                                alignItems: 'center',
+                                fontWeight: 'bold',
+                                color:'white',
+                                borderRadius: 20,
+                                backgroundColor: '#ffffff',
+                            }}>
+                                <Text style={styles.text}>FULL</Text>
+                            </Pressable>
                         </View>
                         <View style={{flexDirection: 'row', paddingTop: 10}}>
                             <Image source={require('../../assets/images/bike-shelter.png')}
@@ -153,6 +180,31 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
                         </View>
                     </View>
                 </View>
+                <View style={styles.copyLocation}>
+                    <Image source={require('../../assets/images/parking-marker.png')}
+                           style={{width: 25, height: 25, alignContent: 'flex-start'}}/>
+                    <Text style={styles.attributeText}>{lat.toFixed(6)}, {long.toFixed(6)}</Text>
+                    <Pressable style={{
+                        alignItems: 'center',
+                        width: '27%',
+                        alignContent: 'flex-start',
+                        paddingVertical: 10,
+                        marginLeft: 10,
+                        borderRadius: 20,
+                        backgroundColor: !pressed ? '#ffffff' : '#999999',
+                        borderWidth: 3,
+                        borderColor: !pressed ? '#000000' : '#999999',
+                    }} onPress={() => {
+                        setPressed(true)
+                        copyToClipboard();
+
+                    }
+                    }
+                    >
+                        <Image source={require('../../assets/images/clipboard-icon.png')}
+                               style={{width: 20, height: 20, alignContent: 'flex-start'}}/>
+                    </Pressable>
+                </View>
             </GestureRecognizer>
         </View>);
 }
@@ -161,18 +213,6 @@ const InfoPopup = ({desc, image, numStars, numReviews, setFullscreen,setSelected
 export default InfoPopup;
 
 export const styles = StyleSheet.create({
-    bottomView: {
-        alignItems: 'flex-start',
-        backgroundColor: '#ffffff',
-        flexDirection:"column",
-        height: '25%',
-        width: '100%',
-        paddingTop: 0,
-        justifyContent: 'center',
-        borderRadius: 15,
-        position: 'absolute',
-        bottom: 0,
-    },
     sectionTitle: {
         fontSize: 18,
         fontWeight: '600',
@@ -203,7 +243,7 @@ export const styles = StyleSheet.create({
         borderRadius: 30,
         padding: 0,
         paddingTop: 20,
-        paddingBottom: 120,
+        paddingBottom: 0,
         //alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
@@ -241,4 +281,11 @@ export const styles = StyleSheet.create({
         letterSpacing: 0.25,
         color: 'white',
     },
+    copyLocation: {
+        flexDirection:'row',
+        width: '95%',
+        paddingTop: 5,
+        alignItems:'center',
+        justifyContent:'center'
+    }
 });
