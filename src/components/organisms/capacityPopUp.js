@@ -1,8 +1,9 @@
 import {Marker} from "react-native-maps";
 import {Image, Modal, Pressable, View, Text, StyleSheet} from "react-native";
 import {styles} from "./infoPopup";
+import {updateLiveLocation} from "../../utils/database";
 
-function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, addPopup}) {
+function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelectedLiveFree}) {
     return (<Modal
         animationType="slide"
         transparent={true}
@@ -57,8 +58,10 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, addPopup
                         }}
                         onPress={() => {
                             setCloseVisible(false);
+                            updateLiveLocation(id, 0);
+                            setSelectedLiveFree(0);
                         }
-                    }
+                        }
                     >
                         <Text>All</Text>
                     </Pressable>
@@ -76,7 +79,8 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, addPopup
                         }}
                         onPress={() => {
                             setCloseVisible(false);
-                            addPopup(id);
+                            updateLiveLocation(id, 50);
+                            setSelectedLiveFree(50);
                         }
                         }
                     >
@@ -96,7 +100,8 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, addPopup
                         }}
                         onPress={() => {
                             setCloseVisible(false);
-                            addPopup(id);
+                            updateLiveLocation(id, 100);
+                            setSelectedLiveFree(100);
                         }
                         }
                     >

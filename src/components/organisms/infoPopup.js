@@ -4,8 +4,15 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
 import * as Clipboard from 'expo-clipboard'
 import * as Linking from 'expo-linking';
+import {createdAt} from "expo-updates";
+import moment from "moment";
 
-const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, setFullscreen,setSelectedDesc, duration, capacity, link, shelter}) => {
+function getTime(createdAt) {
+    const time = moment(new Date(createdAt * 1000)).subtract(1969, 'years').fromNow()
+    return time.endsWith("years ago") ? "" : time;
+}
+
+const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, setFullscreen,setSelectedDesc, duration, capacity, link, shelter, setCloseVisible, liveFree, createdAt}) => {
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
 
@@ -141,6 +148,15 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                             <Image source={require('../../assets/images/bike-icon.png')}
                                    style={styles.attributeIcon}/>
                             <Text style={styles.attributeText}>{`${duration} min`}</Text>
+                            <Text style={{
+                                fontSize: 10,
+                                flex:4,
+                                alignSelf: 'center',
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                paddingHorizontal: 0}}>
+                                {getTime(createdAt)}
+                            </Text>
                         </View>
                         <View style={{flexDirection:'row', paddingTop: 5}}>
                             <Image source={require('../../assets/images/bike-park-icon.png')}
@@ -149,19 +165,19 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                                 fontSize: 18,
                                 flex:4,
                                 paddingHorizontal: 5}}>
-                                {`${capacity} bays`}
+                                {`${capacity}`}
                             </Text>
                             <Pressable style={{
                                 fontSize: 18,
-                                flex:3,
-                                paddingHorizontal: 5,
+                                flex:4,
+                                padding: 5,
                                 alignItems: 'center',
                                 fontWeight: 'bold',
-                                color:'white',
+                                color:'black',
                                 borderRadius: 20,
-                                backgroundColor: '#ffffff',
+                                backgroundColor: liveFree === 100 ? "#ff0000" : liveFree === 50? "#ffbf00" : '#00ff00',
                             }}>
-                                <Text style={styles.text}>FULL</Text>
+                                <Text style={styles.text}>{liveFree === 100 ? "FULL" : liveFree === 50? "SOME" : "EMPTY"}</Text>
                             </Pressable>
                         </View>
                         <View style={{flexDirection: 'row', paddingTop: 10}}>
@@ -205,6 +221,21 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                                style={{width: 20, height: 20, alignContent: 'flex-start'}}/>
                     </Pressable>
                 </View>
+                <Pressable
+                    style={{
+                    alignItems: 'center',
+                    width: '90%',
+                    alignContent: 'flex-start',
+                    paddingVertical: 10,
+                    marginLeft: 0,
+                    marginVertical: 10,
+                    borderRadius: 20,
+                    backgroundColor: '#8969ff',
+                }} onPress={() => {
+                    setCloseVisible(true);
+                }}>
+                    <Text>UPDATE CAPACITY</Text>
+                </Pressable>
             </GestureRecognizer>
         </View>);
 }
@@ -272,7 +303,7 @@ export const styles = StyleSheet.create({
     },
     attributeText: {
         fontSize: 18,
-        flex:7,
+        flex:4,
         paddingHorizontal: 5
     },
     text: {

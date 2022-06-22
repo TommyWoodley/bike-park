@@ -1,25 +1,16 @@
 import {firebase} from "./config";
 import {Keyboard} from "react-native";
 
-export function onResult(querySnapshot, setLocations) {
+export function onResult(querySnapshot, setLocations, selectedDesc, update) {
     const locations = []
     querySnapshot.forEach(async (doc) => {
-        const {coord, desc, img, capacity, shelter} = doc.data()
-
-        let snapshot = await firebase.firestore()
-            .collection('locations')
-            .doc(doc.id)
-            .collection('reviews')
-            .get()
-
-        const reviews = []
-        snapshot.forEach(rdoc => {
-            const {rating, username} = rdoc.data()
-            reviews.push({id: rdoc.id, rating, username })
-        })
-
+        const {coord, desc} = doc.data();
+        if (selectedDesc === desc) {
+            console.log('update me');
+            update(doc.id);
+        }
         locations.push({
-            id: doc.id, coord, desc, img, reviews, capacity, shelter,
+            id: doc.id, coord, desc,
         })
     })
     setLocations(locations);
@@ -27,6 +18,46 @@ export function onResult(querySnapshot, setLocations) {
 
 export function onError(error) {
     console.error(error);
+}
+
+//update live location
+
+export function updateLiveLocation(id, newCap) {
+    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+    firebase.firestore()
+        .collection('locations')
+        .doc(id)
+        .update({
+            'liveFree': newCap,
+            'createdAt': timestamp,
+        }).then(r => {
+        console.log('updated');
+    });
+}
+
+
+// get single function
+
+export async function getFromDatabase(id) {
+    const doc = await firebase.firestore().collection('locations').doc(id).get()
+    const {coord, desc, img, capacity, shelter, liveFree, createdAt} = doc.data()
+
+    let snapshot = await firebase.firestore()
+        .collection('locations')
+        .doc(id)
+        .collection('reviews')
+        .get()
+
+    const reviews = []
+    snapshot.forEach(rdoc => {
+        const {rating, username} = rdoc.data()
+        reviews.push({id: rdoc.id, rating, username })
+    })
+
+    return ({
+        id: doc.id, coord, desc, img, reviews, capacity, shelter, liveFree, createdAt,
+    });
 }
 
 // add an item
