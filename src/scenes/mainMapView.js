@@ -106,21 +106,32 @@ export default function MainMapView() {
     const mapView = createRef();
 
     function spamUser(location) {
-        console.log(location.coords)
-        const ps = locations.map((marker, index) => (
+        console.log(location.coords);
+        console.log(markers.length);
+        console.log(locations);
+        const pps = locations.map((marker, index) => (
             {
                 index: index,
                 distance: getDistance(marker.coord.latitude, marker.coord.longitude, location.coords.latitude, location.coords.longitude),
-                marker: marker
+                marker: marker,
             }
-        )).filter((obj, index) => obj.distance < 10).sort((a, b) => a.distance > b.distance);
+        ));
+        console.log('all:');
+        console.log(pps.map(x => x.distance));
+        const ps = pps
+            .filter((obj, index) => obj.distance < 10)
+            .sort((a, b) => a.distance > b.distance);
+        //console.log(ps);
+        console.log('sorted:');
+        console.log(ps.map(x => x.distance));
         console.log(closeVisible);
-        if (ps.length > 0 && !closeVisible && !popedUp.includes(ps.at(0).marker.id)) { // the closest one within some metres
-            const mark = ps.at(0).marker;
-            setClosest(ps.at(0).marker);
+        console.log(ps.length + closeVisible);
+        if (ps.length > 0 && !closeVisible && !popedUp.includes(ps[0].marker.id)) { // the closest one within some metres
+            const mark = ps[0].marker;
+            setClosest(ps[0].marker);
             setClosestImg('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
             setCloseVisible(true);
-            console.log('popup');
+            console.log('popup' + closeVisible);
             const storage = getStorage();
             const reference = ref(storage, '/' + mark.img);
 
@@ -151,17 +162,17 @@ export default function MainMapView() {
         })();
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            let location = await Location.watchPositionAsync(
-                {
-                    accuracy: Accuracy.Highest,
-                    timeInterval:5000,
-                    distanceInterval:1
-                }, spamUser);
-
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         let location = await Location.watchPositionAsync(
+    //             {
+    //                 accuracy: Accuracy.Highest,
+    //                 timeInterval:5000,
+    //                 distanceInterval:1
+    //             }, spamUser);
+    //
+    //     })();
+    // }, []);
 
     useEffect(() => {
         fireRef
@@ -207,7 +218,8 @@ export default function MainMapView() {
                     longitude: currentLong,
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01
-                }}>
+                }}
+            >
                 <MapViewDirections
                     origin={{ latitude: geoLat, longitude: geoLong }}
                     destination={{ latitude: currentLat, longitude: currentLong }}

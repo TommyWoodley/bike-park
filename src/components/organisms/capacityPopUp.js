@@ -57,7 +57,6 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, addPopup
                         }}
                         onPress={() => {
                             setCloseVisible(false);
-                            addPopup(id);
                         }
                     }
                     >
