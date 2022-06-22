@@ -2,15 +2,15 @@ import {Marker} from "react-native-maps";
 import {Image, Modal, Pressable, View, Text, StyleSheet} from "react-native";
 import {styles} from "./infoPopup";
 
-function CapacityPopUp({id, desc, image, visible, setVisible}) {
+function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, addPopup}) {
     return (<Modal
         animationType="slide"
         transparent={true}
         desc={desc}
         image={image}
-        visible={visible}
+        visible={closeVisible}
         onRequestClose={() => {
-            setVisible(false);
+            setCloseVisible(false);
         }}
         style={{justifyContent: 'center', alignItems: 'center'}}
     >
@@ -55,7 +55,11 @@ function CapacityPopUp({id, desc, image, visible, setVisible}) {
                             borderWidth: 3,
                             borderColor: '#000000',
                         }}
-                        onPress={() => setVisible(false)}
+                        onPress={() => {
+                            setCloseVisible(false);
+                            addPopup(id);
+                        }
+                    }
                     >
                         <Text>All</Text>
                     </Pressable>
@@ -71,7 +75,11 @@ function CapacityPopUp({id, desc, image, visible, setVisible}) {
                             borderWidth: 3,
                             borderColor: '#000000',
                         }}
-                        onPress={() => setVisible(false)}
+                        onPress={() => {
+                            setCloseVisible(false);
+                            addPopup(id);
+                        }
+                        }
                     >
                         <Text>Some</Text>
                     </Pressable>
@@ -87,7 +95,11 @@ function CapacityPopUp({id, desc, image, visible, setVisible}) {
                             borderWidth: 3,
                             borderColor: '#000000',
                         }}
-                        onPress={() => setVisible(false)}
+                        onPress={() => {
+                            setCloseVisible(false);
+                            addPopup(id);
+                        }
+                        }
                     >
                         <Text>None</Text>
                     </Pressable>

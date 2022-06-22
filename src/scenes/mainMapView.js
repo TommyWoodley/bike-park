@@ -9,6 +9,7 @@ import InfoPopup from "../components/organisms/infoPopup";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
 import MapViewDirections from "react-native-maps-directions";
 import CapacityPopUp from "../components/organisms/capacityPopUp";
+import {Accuracy} from "expo-location";
 
 const fireRef = firebase.firestore().collection('locations');
 
@@ -49,10 +50,12 @@ export default function MainMapView() {
     const [selectedNumReviews, setSelectedNumReviews] = useState(0);
     const [selectedCapacity, setSelectedCapacity] = useState(0);
     const [selectedShelter, setSelectedShelter] = useState(false);
+    const [popedUp, setPopedUp] = useState([])
 
     const [closeVisible, setCloseVisible] = useState(false);
     const [closest, setClosest] = useState({
         desc: '',
+        id: '',
     });
     const [closestImg, setClosestImg] = useState('');
 
@@ -102,6 +105,35 @@ export default function MainMapView() {
 
     const mapView = createRef();
 
+    function spamUser(location) {
+        console.log(location.coords)
+        const ps = locations.map((marker, index) => (
+            {
+                index: index,
+                distance: getDistance(marker.coord.latitude, marker.coord.longitude, location.coords.latitude, location.coords.longitude),
+                marker: marker
+            }
+        )).filter((obj, index) => obj.distance < 10).sort((a, b) => a.distance > b.distance);
+        console.log(closeVisible);
+        if (ps.length > 0 && !closeVisible && !popedUp.includes(ps.at(0).marker.id)) { // the closest one within some metres
+            const mark = ps.at(0).marker;
+            setClosest(ps.at(0).marker);
+            setClosestImg('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
+            setCloseVisible(true);
+            console.log('popup');
+            const storage = getStorage();
+            const reference = ref(storage, '/' + mark.img);
+
+            getDownloadURL(reference)
+                .then((x) => {
+                    setClosestImg(x);
+                })
+                .catch(e => {
+                    console.log(mark.desc + 'getting downloadURL of image error =>  ' + '/' + mark.img, e);
+                    setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
+                })
+        }
+    }
 
     // Ask for location permission
     useEffect(() => {
@@ -121,35 +153,15 @@ export default function MainMapView() {
 
     useEffect(() => {
         (async () => {
-            let location = await Location.getCurrentPositionAsync({});
-            const ps = locations.map((marker, index) => (
+            let location = await Location.watchPositionAsync(
                 {
-                    index: index,
-                    distance: getDistance(marker.coord.latitude, marker.coord.longitude, location.coords.latitude, location.coords.longitude),
-                    marker: marker
-                }
-            )).filter((obj, index) => obj.distance < 5).sort((a, b) => a.distance > b.distance);
+                    accuracy: Accuracy.Highest,
+                    timeInterval:5000,
+                    distanceInterval:1
+                }, spamUser);
 
-            if (ps.length > 0) { // the closest one within some metres
-                const mark = ps.at(0).marker;
-                console.log(mark);
-                setClosest(ps.at(0).marker);
-                setClosestImg('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
-                setCloseVisible(true);
-                const storage = getStorage();
-                const reference = ref(storage, '/' + mark.img);
-
-                getDownloadURL(reference)
-                    .then((x) => {
-                        setClosestImg(x);
-                    })
-                    .catch(e => {
-                        console.log(mark.desc + 'getting downloadURL of image error =>  ' + '/' + mark.img, e);
-                        setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
-                    })
-            }
         })();
-    }, [geoLat, geoLong, locations]);
+    }, []);
 
     useEffect(() => {
         fireRef
@@ -160,10 +172,14 @@ export default function MainMapView() {
     return (
         <View style={{flex: 1}}>
             <CapacityPopUp
-                visible={closeVisible}
-                setVisible={setCloseVisible}
+                closeVisible={closeVisible}
+                setCloseVisible={setCloseVisible}
+                addPopup={(id) => {
+                    popedUp.push(id);
+                }}
                 desc={closest.desc}
                 image={closestImg}
+                id={closest.id}
             />
             <InfoPopup
                 style={{height: fullScreen === 'full' ? '40%' : '25%', width: '100%'}}
