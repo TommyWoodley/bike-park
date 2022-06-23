@@ -1,20 +1,38 @@
-import {Button, Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
+import {Button, FlatList, Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
 import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
 import * as Clipboard from 'expo-clipboard'
 import * as Linking from 'expo-linking';
-import {createdAt} from "expo-updates";
 import moment from "moment";
 
 function getTime(createdAt) {
-    const time = moment(new Date(createdAt * 1000)).subtract(1969, 'years').fromNow()
+    console.log(createdAt);
+    const time = moment(new Date(createdAt * 1000)).subtract(1969, 'years').fromNow();
     return time.endsWith("years ago") ? "" : time;
 }
 
-const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, setFullscreen,setSelectedDesc, duration, capacity, link, shelter, setCloseVisible, liveFree, createdAt}) => {
+const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, setFullscreen,setSelectedDesc, duration, capacity, link, shelter, setCloseVisible, liveFree, createdAt, reviews, setRatingsVisible}) => {
 
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+
+    const renderItem = ({item}) => (
+        <View
+            style={{width:'100%', justifyItems:'flex-start', padding: 10}}
+        >
+
+            <View style={{flexDirection:'row', alignItems:'center', width: '100%'}}>
+                <View style={{flexDirection:'row'}}>
+                    <Text style={styles.ratingsUsername}>{item.username}</Text>
+                    <StarRating score={item.rating} num={-1}/>
+                </View>
+                <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'flex-end',}}>
+                    <Text style={{textAlign: 'right'}}>{getTime(item.createdAt)}</Text>
+                </View>
+            </View>
+            <Text>{item.comment}</Text>
+        </View>
+    );
 
     const [pressed, setPressed] = useState(false);
 
@@ -73,7 +91,7 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
             alignItems: 'flex-start',
             backgroundColor: '#ffffff',
             flexDirection:"column",
-            height: fullscreen === 'full' ? '40%' : '25%',
+            height: fullscreen === 'full' ? '80%' : '25%',
             width: '100%',
             paddingTop: 0,
             justifyContent: 'center',
@@ -92,7 +110,7 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                 }}/>
                 <View style={{
                     flexDirection: 'row',
-                    height: fullscreen === 'full'? '55%' : '88%'
+                    height: fullscreen === 'full'? '25%' : '88%'
                 }}>
                     <Modal
                         animationType="slide"
@@ -137,7 +155,7 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                         </Pressable>
                     </View>
                     <View style={{width:'4%'}}/>
-                    <View style={{width:'45%', flexDirection: 'column'}}>
+                    <View style={{width:'45%', height: '90%', flexDirection: 'column'}}>
                         <StarRating
                             score={numStars}
                             num={numReviews}
@@ -222,20 +240,21 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                     </Pressable>
                 </View>
                 <Pressable
-                    style={{
-                    alignItems: 'center',
-                    width: '90%',
-                    alignContent: 'flex-start',
-                    paddingVertical: 10,
-                    marginLeft: 0,
-                    marginVertical: 10,
-                    borderRadius: 20,
-                    backgroundColor: '#8969ff',
-                }} onPress={() => {
+                    style={styles.updateButtons} onPress={() => {
                     setCloseVisible(true);
                 }}>
                     <Text>UPDATE CAPACITY</Text>
                 </Pressable>
+
+                <Pressable
+                    style={styles.updateButtons} onPress={() => {
+                    setRatingsVisible(true);
+                }}>
+                    <Text>REVIEW</Text>
+                </Pressable>
+
+                <Text style={styles.ratingsTitle}>Reviews</Text>
+                <FlatList data={reviews.sort((x, y) => y.createdAt - x.createdAt)} renderItem={renderItem} keyExtractor={item => item.id} style={{width:'100%'}}/>
             </GestureRecognizer>
         </View>);
 }
@@ -291,7 +310,7 @@ export const styles = StyleSheet.create({
         width: '50%',
         alignContent: 'flex-end',
         justifyContent: 'flex-end',
-        paddingVertical: 10,
+        paddingVertical: 5,
         marginLeft: 20,
         borderRadius: 20,
         backgroundColor: '#426fda',
@@ -312,11 +331,35 @@ export const styles = StyleSheet.create({
         letterSpacing: 0.25,
         color: 'white',
     },
+    ratingsUsername: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'black',
+        paddingRight: 10,
+    },
+    ratingsTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'black',
+        paddingTop: 20,
+    },
     copyLocation: {
         flexDirection:'row',
         width: '95%',
         paddingTop: 5,
         alignItems:'center',
         justifyContent:'center'
-    }
+    },
+    updateButtons: {
+        alignItems: 'center',
+        width: '90%',
+        alignContent: 'flex-start',
+        paddingVertical: 10,
+        marginLeft: 0,
+        marginVertical: 10,
+        borderRadius: 20,
+        backgroundColor: '#8969ff',
+    },
 });

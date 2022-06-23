@@ -36,6 +36,27 @@ export function updateLiveLocation(id, newCap) {
     });
 }
 
+export function addReview(id, username, rating, comment) {
+    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+    const review = {
+        username: username,
+        rating: rating,
+        comment: comment,
+        createdAt: timestamp,
+    }
+
+    firebase.firestore()
+        .collection('locations')
+        .doc(id)
+        .collection('reviews')
+        .add(review)
+        .then(r => {
+            Keyboard.dismiss();
+        });
+
+}
+
 
 // get single function
 
@@ -51,8 +72,8 @@ export async function getFromDatabase(id) {
 
     const reviews = []
     snapshot.forEach(rdoc => {
-        const {rating, username} = rdoc.data()
-        reviews.push({id: rdoc.id, rating, username })
+        const {rating, username, comment, createdAt} = rdoc.data()
+        reviews.push({id: rdoc.id, rating, username, comment, createdAt })
     })
 
     return ({

@@ -15,17 +15,18 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
         }}
         style={{justifyContent: 'center', alignItems: 'center'}}
     >
-        <View style={{justifyContent: 'center', alignContent: 'center'}}>
+        <View style={{justifyContent: 'center', alignContent: 'center', backgroundColor:'rgba(0,0,0,0.7)', height:'100%'}}>
             <View style={{
-                marginTop: '40%',
-                height: '50%',
+                marginTop: '0%',
+                height: '30%',
                 width: '90%',
                 alignSelf:'center',
                 backgroundColor: "white",
                 borderRadius: 30,
                 padding: 10,
                 alignItems: "center",
-                elevation: 20
+                elevation: 20,
+                borderWidth: 5,
             }}>
                 <View style={{flexDirection: 'row', height: '70%'}}>
                     <Image source={{uri: image}}
@@ -40,7 +41,7 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
                         color: '#000000',
                         padding: 10,
                         flex: 2
-                    }}>How may bays are left in {desc}?</Text>
+                    }}>How full is {desc}?</Text>
 
                 </View>
                 <View style={{flexDirection: 'row', paddingTop: 18}}>
@@ -53,8 +54,8 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
                             marginLeft: 10,
                             borderRadius: 20,
                             backgroundColor: '#ffffff',
-                            borderWidth: 3,
-                            borderColor: '#000000',
+                            borderWidth: 5,
+                            borderColor: '#00ff00',
                         }}
                         onPress={() => {
                             setCloseVisible(false);
@@ -63,7 +64,7 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
                         }
                         }
                     >
-                        <Text>All</Text>
+                        <Text>Empty</Text>
                     </Pressable>
                     <Pressable
                         style={{
@@ -74,8 +75,8 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
                             marginLeft: 10,
                             borderRadius: 20,
                             backgroundColor: '#ffffff',
-                            borderWidth: 3,
-                            borderColor: '#000000',
+                            borderWidth: 5,
+                            borderColor: "#ffbf00",
                         }}
                         onPress={() => {
                             setCloseVisible(false);
@@ -95,8 +96,8 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
                             marginLeft: 10,
                             borderRadius: 20,
                             backgroundColor: '#ffffff',
-                            borderWidth: 3,
-                            borderColor: '#000000',
+                            borderWidth: 5,
+                            borderColor: "#ff0000",
                         }}
                         onPress={() => {
                             setCloseVisible(false);
@@ -105,7 +106,7 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
                         }
                         }
                     >
-                        <Text>None</Text>
+                        <Text>Full</Text>
                     </Pressable>
                 </View>
             </View>

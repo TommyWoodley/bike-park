@@ -13,6 +13,7 @@ import {Accuracy} from "expo-location";
 import {setEnabled} from "react-native/Libraries/Pressability/PressabilityDebug";
 import {createdAt} from "expo-updates";
 import moment from "moment";
+import RatingsPopup from "../components/organisms/ratingsPopUp";
 
 
 const fireRef = firebase.firestore().collection('locations');
@@ -57,9 +58,11 @@ export default function MainMapView() {
     const [selectedShelter, setSelectedShelter] = useState(false);
     const [selectedID, setSelectedID] = useState('5');
     const [selectedCreatedAt, setSelectedCreatedAt] = useState('');
+    const [selectedReviews, setSelectedReviews] = useState([]);
     const [capacityEnabled, setCapacityEnabled] = useState(false);
 
     const [closeVisible, setCloseVisible] = useState(false);
+    const [ratingsVisible, setRatingsVisible] = useState(false);
 
     useEffect(() => {
         firebase.firestore()
@@ -73,6 +76,27 @@ export default function MainMapView() {
                 }
 
             });
+
+        firebase.firestore()
+            .collection('locations')
+            .doc(selectedID)
+            .collection('reviews')
+            .onSnapshot(documentSnapshot => {
+                const reviews = [];
+                let totalStars = 0;
+
+                documentSnapshot.forEach(rdoc => {
+                    const {rating, username, comment, createdAt} = rdoc.data();
+                    reviews.push({id: rdoc.id, rating, username, comment, createdAt });
+                    totalStars += rating;
+                });
+
+                setSelectedReviews(reviews);
+
+                setSelectedNumStars(totalStars / reviews.length);
+                setSelectedNumReviews(reviews.length);
+            }
+            );
     }, [selectedID]);
 
 
@@ -96,12 +120,8 @@ export default function MainMapView() {
                     setDone(false);
                     setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
                     setFullScreen(() => 'popup');
-                    setSelectedNumReviews(pin.reviews.length);
                     setSelectedID(marker.id);
                     setSelectedShelter(pin.shelter);
-                    let totalStars = 0;
-                    pin.reviews.forEach((x, i) => totalStars += x.rating);
-                    setSelectedNumStars(totalStars / pin.reviews.length);
                     setSelectedCapacity(pin.capacity);
                     setSelectedDesc(pin.desc);
                     setCurrentLat(marker.coord.latitude);
@@ -166,8 +186,14 @@ export default function MainMapView() {
                 id={selectedID}
                 setSelectedLiveFree={setSelectedLiveFree}
             />
+            <RatingsPopup
+                id={selectedID}
+                image={image}
+                ratingsVisible={ratingsVisible}
+                setRatingsVisible={setRatingsVisible}
+            />
             <InfoPopup
-                style={{height: fullScreen === 'full' ? '40%' : '25%', width: '100%'}}
+                style={{height: fullScreen === 'full' ? '80%' : '25%', width: '100%'}}
                 lat={currentLat}
                 long={currentLong}
                 desc={selectedDesc}
@@ -184,9 +210,13 @@ export default function MainMapView() {
                 setCloseVisible={setCloseVisible}
                 liveFree={selectedLiveFree}
                 createdAt={selectedCreatedAt}
+                reviews={selectedReviews}
+                id={selectedID}
+                ratingVisible={ratingsVisible}
+                setRatingsVisible={setRatingsVisible}
             />
             <MapView
-                style={{height: fullScreen === 'no' ? '100%' : (fullScreen === 'full' ? '60%' : '75%') ,width: '100%'}}
+                style={{height: fullScreen === 'no' ? '100%' : (fullScreen === 'full' ? '20%' : '75%') ,width: '100%'}}
                 provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
                 ref={mapView}

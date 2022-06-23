@@ -10,7 +10,7 @@ function StarRating({score, num}) {
 
     return (<View style={{flexDirection: "row", alignItems: 'flex-start', resizeMode:'contain'}}>
         {stars}
-        <Text style={{fontSize: 15}}>({num})</Text>
+        <Text style={{fontSize: 15}}>{num !== -1? `(${num})` : ''}</Text>
     </View>);
 }
 
