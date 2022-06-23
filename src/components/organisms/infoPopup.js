@@ -254,6 +254,13 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                 </Pressable>
 
                 <Text style={styles.ratingsTitle}>Reviews</Text>
+                <Text style={{
+                    fontSize: numReviews !== 0 ? 1 : 14,
+
+                    letterSpacing: 0.25,
+                    color: numReviews !== 0 ? 'white' : 'black',
+                    paddingTop: numReviews === 0 ? 0 : 20,
+                }}>No reviews available yet</Text>
                 <FlatList data={reviews.sort((x, y) => y.createdAt - x.createdAt)} renderItem={renderItem} keyExtractor={item => item.id} style={{width:'100%'}}/>
             </GestureRecognizer>
         </View>);
