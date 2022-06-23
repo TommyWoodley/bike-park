@@ -101,7 +101,7 @@ export default function MainMapView() {
                     setSelectedShelter(pin.shelter);
                     let totalStars = 0;
                     pin.reviews.forEach((x, i) => totalStars += x.rating);
-                    setSelectedNumStars(totalStars / pin.reviews.length);
+                    setSelectedNumStars(totalStars / (pin.reviews.length === 0 ? 1 : pin.reviews.length));
                     setSelectedCapacity(pin.capacity);
                     setSelectedDesc(pin.desc);
                     setCurrentLat(marker.coord.latitude);
