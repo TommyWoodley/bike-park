@@ -158,7 +158,7 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
 
 export default RatingsPopup;
 
-const ratingStyles = StyleSheet.create({
+export const ratingStyles = StyleSheet.create({
     container: {
         backgroundColor: "#FF00FF",
     },

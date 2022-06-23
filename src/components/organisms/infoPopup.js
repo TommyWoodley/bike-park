@@ -1,4 +1,4 @@
-import {Button, FlatList, Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
+import {FlatList, Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
 import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
@@ -7,7 +7,6 @@ import * as Linking from 'expo-linking';
 import moment from "moment";
 
 function getTime(createdAt) {
-    console.log(createdAt);
     const time = moment(new Date(createdAt * 1000)).subtract(1969, 'years').fromNow();
     return time.endsWith("years ago") ? "" : time;
 }
@@ -156,10 +155,15 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                     </View>
                     <View style={{width:'4%'}}/>
                     <View style={{width:'45%', height: '90%', flexDirection: 'column'}}>
-                        <StarRating
-                            score={numStars}
-                            num={numReviews}
-                        />
+                        <Pressable
+                        onPress={() => {
+                            setFullscreen('full')
+                        }}>
+                            <StarRating
+                                score={numStars}
+                                num={numReviews}
+                            />
+                        </Pressable>
                         <Text numberOfLines={1} ellipsizeMode='tail'
                               style={styles.sectionTitle}>{desc}</Text>
                         <View style={{flexDirection:'row', paddingTop: 5}}>

@@ -2,11 +2,13 @@ import {firebase} from "./config";
 import {Keyboard} from "react-native";
 
 export function onResult(querySnapshot, setLocations, currentLocations) {
+
+
     const locations = []
     querySnapshot.forEach(async (doc) => {
         const {coord, desc} = doc.data();
         locations.push({
-            id: doc.id, coord, desc,
+            id: doc.id, coord, desc
         })
     })
     if (locations !== currentLocations) {
@@ -61,7 +63,7 @@ export function addReview(id, username, rating, comment) {
 
 export async function getFromDatabase(id) {
     const doc = await firebase.firestore().collection('locations').doc(id).get()
-    const {coord, desc, img, capacity, shelter, liveFree, createdAt} = doc.data()
+    const {coord, desc, img, capacity, shelter, liveFree, createdAt, avg,} = doc.data()
 
     let snapshot = await firebase.firestore()
         .collection('locations')
@@ -71,12 +73,12 @@ export async function getFromDatabase(id) {
 
     const reviews = []
     snapshot.forEach(rdoc => {
-        const {rating, username, comment, createdAt} = rdoc.data()
+        const {rating, username, comment, createdAt, avg} = rdoc.data()
         reviews.push({id: rdoc.id, rating, username, comment, createdAt })
     })
 
     return ({
-        id: doc.id, coord, desc, img, reviews, capacity, shelter, liveFree, createdAt,
+        id: doc.id, coord, desc, img, reviews, capacity, shelter, liveFree, createdAt, avg,
     });
 }
 

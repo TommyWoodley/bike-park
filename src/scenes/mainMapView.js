@@ -1,5 +1,5 @@
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import {View} from 'react-native';
+import {View, Image, Pressable} from 'react-native';
 import {firebase} from "../utils/config";
 import {getFromDatabase, onError, onResult} from "../utils/database";
 import {createRef, useEffect, useState} from "react";
@@ -9,12 +9,11 @@ import InfoPopup from "../components/organisms/infoPopup";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
 import MapViewDirections from "react-native-maps-directions";
 import CapacityPopUp from "../components/organisms/capacityPopUp";
-import {Accuracy} from "expo-location";
 import {setEnabled} from "react-native/Libraries/Pressability/PressabilityDebug";
-import {createdAt} from "expo-updates";
-import moment from "moment";
 import RatingsPopup from "../components/organisms/ratingsPopUp";
-
+import FilterPopUp from "../components/organisms/filterPopUp";
+import {waitFor} from "@babel/core/lib/gensync-utils/async";
+import LoadPopUp from "../components/organisms/loadPopUp";
 
 const fireRef = firebase.firestore().collection('locations');
 
@@ -37,9 +36,22 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
+function allowed(location, filters) {
+    if (location.avg !== 0 && (location.avg < filters.minimumStar || location.avg > filters.maximumStar)) {
+        return false;
+    } else if (location.capacity < filters.minimumCap) {
+        return false;
+    } else if (filters.needsShelter && !location.shelter) {
+        return false;
+    }
+
+    return true;
+}
+
 export default function MainMapView() {
     const [fullScreen, setFullScreen] = useState('no');
     const [locations, setLocations] = useState([]);
+    const [filteredLocations, setFilteredLocations] = useState([]);
     const [currentLat, setCurrentLat] = useState(51.498936);
     const [currentLong, setCurrentLong] = useState(-0.177112);
     const [done, setDone] = useState(false);
@@ -59,10 +71,53 @@ export default function MainMapView() {
     const [selectedID, setSelectedID] = useState('5');
     const [selectedCreatedAt, setSelectedCreatedAt] = useState('');
     const [selectedReviews, setSelectedReviews] = useState([]);
-    const [capacityEnabled, setCapacityEnabled] = useState(false);
 
     const [closeVisible, setCloseVisible] = useState(false);
     const [ratingsVisible, setRatingsVisible] = useState(false);
+    const [filterVisible, setFilterVisible] = useState(false);
+    const [checked, setChecked] = useState(false);
+    const [load, setLoad] = useState(false);
+
+    const base = {
+        'minimumStar': 1,
+        'maximumStar': 5,
+        'minimumCap': 0,
+        'minimumReviews': 0,
+        'needsShelter': false,
+    }
+
+
+    const [filters, setFilters] = useState({
+        'minimumStar': 1,
+        'maximumStar': 5,
+        'minimumCap': 0,
+        'minimumReviews': 0,
+        'needsShelter': false,
+    });
+
+    const myFunction = async () => {
+        let count = 0;
+        const fLoc = [];
+
+        for (const pos of locations) {
+            const pin = await getFromDatabase(pos.id);
+            if (allowed(pin, filters)) {
+                fLoc.push(pin);
+            }
+            count += 1;
+        }
+
+        if (fLoc !== filteredLocations) {
+            setFilteredLocations(fLoc);
+        }
+    }
+
+    useEffect(() => {
+        setLoad(true);
+        myFunction().then(() => {
+            setLoad(false);
+        });
+    }, [filters.minimumStar, filters.maximumStar, filters.minimumCap, filters.needsShelter, locations])
 
     useEffect(() => {
         firebase.firestore()
@@ -107,50 +162,49 @@ export default function MainMapView() {
         setSelectedLiveFree(pin.liveFree);
     }
 
-    let markers = locations.map((marker, index) => (
-            <ParkingMarker
-                key={index}
-                coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
-                desc={marker.desc}
-                isSelected={marker.desc === selectedDesc}
-                onClick={async () => {
-                    const pin = await getFromDatabase(marker.id);
-                    //console.log(pin);
-                    setLink(getLink(marker.coord.latitude, marker.coord.longitude));
-                    setDone(false);
-                    setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
-                    setFullScreen(() => 'popup');
-                    setSelectedID(marker.id);
-                    setSelectedShelter(pin.shelter);
-                    setSelectedCapacity(pin.capacity);
-                    setSelectedDesc(pin.desc);
-                    setCurrentLat(marker.coord.latitude);
-                    setCurrentLong(marker.coord.longitude);
-                    setDuration('~');
-                    const storage = getStorage();
-                    const reference = ref(storage, '/' + pin.img);
+    let markers = filteredLocations.map((marker, index) => (
+        <ParkingMarker
+            key={index}
+            coord={{latitude: marker.coord.latitude, longitude: marker.coord.longitude}}
+            desc={marker.desc}
+            isSelected={marker.desc === selectedDesc}
+            onClick={async () => {
+                const pin = await getFromDatabase(marker.id);
+                setLink(getLink(marker.coord.latitude, marker.coord.longitude));
+                setDone(false);
+                setImage('https://flevix.com/wp-content/uploads/2019/07/Untitled-2.gif');
+                setFullScreen(() => 'popup');
+                setSelectedID(marker.id);
+                setSelectedShelter(pin.shelter);
+                setSelectedCapacity(pin.capacity);
+                setSelectedDesc(pin.desc);
+                setCurrentLat(marker.coord.latitude);
+                setCurrentLong(marker.coord.longitude);
+                setDuration('~');
+                const storage = getStorage();
+                const reference = ref(storage, '/' + pin.img);
 
-                    getDownloadURL(reference)
-                        .then((x) => {
-                            setImage(x);
-                        })
-                        .catch(e => {
-                            console.log(pin.desc + 'getting downloadURL of image error =>  ' + '/' + pin.img, e);
-                            setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
-                        });
+                getDownloadURL(reference)
+                    .then((x) => {
+                        setImage(x);
+                    })
+                    .catch(e => {
+                        console.log(pin.desc + 'getting downloadURL of image error =>  ' + '/' + pin.img, e);
+                        setImage('https://storcpdkenticomedia.blob.core.windows.net/media/recipemanagementsystem/media/recipe-media-files/recipes/retail/desktopimages/rainbow-cake600x600_2.jpg?ext=.jpg');
+                    });
 
-                    let location = await Location.getCurrentPositionAsync({});
-                    setGeoLat(location.coords.latitude);
-                    setGeoLong(location.coords.longitude);
-                    setDone(true);
+                let location = await Location.getCurrentPositionAsync({});
+                setGeoLat(location.coords.latitude);
+                setGeoLong(location.coords.longitude);
+                setDone(true);
 
-                    if (getDistance(marker.coord.latitude, marker.coord.longitude, geoLat, geoLong) < 10) {
-                        setEnabled(true);
-                    }
+                if (getDistance(marker.coord.latitude, marker.coord.longitude, geoLat, geoLong) < 10) {
+                    setEnabled(true);
+                }
 
-                }}
-            />
-        ));
+            }}
+        />
+    ))
 
     const mapView = createRef();
 
@@ -178,6 +232,9 @@ export default function MainMapView() {
 
     return (
         <View style={{flex: 1}}>
+            <LoadPopUp
+                load={load}
+            />
             <CapacityPopUp
                 closeVisible={closeVisible}
                 setCloseVisible={setCloseVisible}
@@ -192,6 +249,14 @@ export default function MainMapView() {
                 desc={selectedDesc}
                 ratingsVisible={ratingsVisible}
                 setRatingsVisible={setRatingsVisible}
+            />
+            <FilterPopUp
+                filterVisible={filterVisible}
+                setFilterVisible={setFilterVisible}
+                filters={filters}
+                setFilter={setFilters}
+                checked={checked}
+                setChecked={setChecked}
             />
             <InfoPopup
                 style={{height: fullScreen === 'full' ? '80%' : '25%', width: '100%'}}
@@ -217,7 +282,9 @@ export default function MainMapView() {
                 setRatingsVisible={setRatingsVisible}
             />
             <MapView
-                style={{height: fullScreen === 'no' ? '100%' : (fullScreen === 'full' ? '20%' : '75%') ,width: '100%'}}
+                style={{
+                    position:'absolute',
+                    height: fullScreen === 'no' ? '100%' : (fullScreen === 'full' ? '20%' : '75%') ,width: '100%'}}
                 provider={PROVIDER_GOOGLE}
                 showsUserLocation={true}
                 ref={mapView}
@@ -245,6 +312,39 @@ export default function MainMapView() {
                 />
                 {markers}
             </MapView>
+            <Pressable
+                style={{
+                position:'absolute',
+                top:65,
+                right:12,
+                alignSelf: 'flex-end',
+                backgroundColor:
+                    filters.minimumCap === base.minimumCap &&
+                    filters.minimumStar === base.minimumStar &&
+                    filters.maximumStar === base.maximumStar &&
+                    filters.needsShelter === base.needsShelter &&
+                    filters.minimumReviews === base.minimumReviews ?
+                        'rgba(250,250,250,0.8)' : 'rgba(0,0,0,0.8)',
+                height: 38,
+                width: 38,
+                borderRadius: 2,
+                borderWidth:0,
+                elevation:15,
+                alignContent:'center',
+                justifyContent:'center'
+            }}
+                onPress={() => {
+                    setFilterVisible(true);
+                    // console.log(filters);
+                    // console.log(base);
+                }}
+            >
+                    <Image
+                        source={require('../assets/images/filter-icon.png')}
+                        style={{alignSelf: 'center', width: '60%', height: '60%'}}
+                        tintColor={'#666666'}
+                    />
+            </Pressable>
         </View>
     )
 }

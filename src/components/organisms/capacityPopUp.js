@@ -1,6 +1,4 @@
-import {Marker} from "react-native-maps";
 import {Image, Modal, Pressable, View, Text, StyleSheet} from "react-native";
-import {styles} from "./infoPopup";
 import {updateLiveLocation} from "../../utils/database";
 
 function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelectedLiveFree}) {
