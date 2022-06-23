@@ -1,19 +1,18 @@
 import {firebase} from "./config";
 import {Keyboard} from "react-native";
 
-export function onResult(querySnapshot, setLocations, selectedDesc, update) {
+export function onResult(querySnapshot, setLocations, currentLocations) {
     const locations = []
     querySnapshot.forEach(async (doc) => {
         const {coord, desc} = doc.data();
-        if (selectedDesc === desc) {
-            console.log('update me');
-            update(doc.id);
-        }
         locations.push({
             id: doc.id, coord, desc,
         })
     })
-    setLocations(locations);
+    if (locations !== currentLocations) {
+        setLocations(locations);
+    }
+
 }
 
 export function onError(error) {

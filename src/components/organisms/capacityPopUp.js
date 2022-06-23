@@ -36,13 +36,27 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
                                flex: 3,
                                borderRadius:20,
                                overflow: 'hidden'}}/>
-                    <Text style={{fontSize: 18,
-                        fontWeight: '600',
-                        color: '#000000',
-                        padding: 10,
-                        flex: 2
-                    }}>How full is {desc}?</Text>
-
+                    <View style={{flex: 2}}>
+                        <Pressable
+                        onPress={() => {
+                            setCloseVisible(false)
+                        }
+                        }>
+                            <Image source={require('../../assets/images/cross-icon.png')}
+                                   style={{
+                                       height: 25,
+                                       width: 25,
+                                       margin: 5,
+                                       overflow: 'hidden',
+                                       alignSelf: 'flex-end',
+                            }}/>
+                        </Pressable>
+                        <Text style={{fontSize: 18,
+                            fontWeight: '600',
+                            color: '#000000',
+                            padding: 10,
+                        }}>How full is {desc}?</Text>
+                    </View>
                 </View>
                 <View style={{flexDirection: 'row', paddingTop: 18}}>
                     <Pressable

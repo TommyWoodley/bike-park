@@ -172,8 +172,8 @@ export default function MainMapView() {
 
     useEffect(() => {
         fireRef
-            .orderBy('createdAt')
-            .onSnapshot(querySnapshot => onResult(querySnapshot, setLocations), onError)
+            .orderBy('desc')
+            .onSnapshot(querySnapshot => onResult(querySnapshot, setLocations, locations), onError)
     }, [])
 
     return (
