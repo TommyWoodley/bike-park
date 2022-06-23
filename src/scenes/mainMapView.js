@@ -93,7 +93,7 @@ export default function MainMapView() {
 
                 setSelectedReviews(reviews);
 
-                setSelectedNumStars(totalStars / reviews.length);
+                setSelectedNumStars(totalStars / (reviews.length === 0 ? 1 : reviews.length));
                 setSelectedNumReviews(reviews.length);
             }
             );
@@ -189,6 +189,7 @@ export default function MainMapView() {
             <RatingsPopup
                 id={selectedID}
                 image={image}
+                desc={selectedDesc}
                 ratingsVisible={ratingsVisible}
                 setRatingsVisible={setRatingsVisible}
             />

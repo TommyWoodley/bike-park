@@ -45,13 +45,29 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
                                flex: 3,
                                borderRadius:20,
                                overflow: 'hidden'}}/>
-                    <Text style={{fontSize: 18,
-                        fontWeight: '600',
-                        color: '#000000',
-                        padding: 10,
-                        flex: 2
-                    }}>How safe do you think {desc} is?</Text>
-
+                    <View style={{flex: 2}}>
+                        <Pressable
+                            onPress={() => {
+                                setRatingsVisible(false)
+                            }
+                            }>
+                            <Image source={require('../../assets/images/cross-icon.png')}
+                                   style={{
+                                       height: 20,
+                                       width: 20,
+                                       marginTop: 5,
+                                       marginRight: 5,
+                                       overflow: 'hidden',
+                                       alignSelf: 'flex-end',
+                                   }}/>
+                        </Pressable>
+                        <Text style={{fontSize: 18,
+                            fontWeight: '600',
+                            color: '#000000',
+                            paddingTop: 0,
+                            padding: 10,
+                        }}>How safe do you think {desc} is?</Text>
+                    </View>
                 </View>
 
                 <TextInput
@@ -61,7 +77,7 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
                     value={username}
                 />
 
-                <View style={{flexDirection: 'row', paddingTop: 18}}>
+                <View style={{flexDirection: 'row', paddingVertical: 10}}>
                     <Pressable onPress={() => {
                         setRating(1);
                     }}>
