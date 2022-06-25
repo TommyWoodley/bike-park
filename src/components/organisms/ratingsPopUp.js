@@ -6,7 +6,7 @@ import {addReview} from "../../utils/database";
 function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
 
     const [username, onChangeUsername] = useState('');
-    const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState(1);
     const [text, onChangeText] = useState('');
 
     return (<Modal

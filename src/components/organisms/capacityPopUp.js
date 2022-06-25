@@ -13,9 +13,9 @@ function CapacityPopUp({id, desc, image, closeVisible, setCloseVisible, setSelec
         }}
         style={{justifyContent: 'center', alignItems: 'center'}}
     >
-        <View style={{justifyContent: 'center', alignContent: 'center', backgroundColor:'rgba(0,0,0,0.7)', height:'100%'}}>
+        <View style={{justifyContent: 'flex-start', alignContent: 'center', backgroundColor:'rgba(0,0,0,0.7)', height:'100%'}}>
             <View style={{
-                marginTop: '0%',
+                marginTop: '40%',
                 height: '30%',
                 width: '90%',
                 alignSelf:'center',

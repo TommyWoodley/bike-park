@@ -2,17 +2,15 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {View, Image, Pressable} from 'react-native';
 import {firebase} from "../utils/config";
 import {getFromDatabase, onError, onResult} from "../utils/database";
-import {createRef, useEffect, useState} from "react";
+import {createRef, useEffect, useRef, useState} from "react";
 import * as Location from 'expo-location';
 import {ParkingMarker} from "../components/molecules";
 import InfoPopup from "../components/organisms/infoPopup";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
 import MapViewDirections from "react-native-maps-directions";
 import CapacityPopUp from "../components/organisms/capacityPopUp";
-import {setEnabled} from "react-native/Libraries/Pressability/PressabilityDebug";
 import RatingsPopup from "../components/organisms/ratingsPopUp";
 import FilterPopUp from "../components/organisms/filterPopUp";
-import {waitFor} from "@babel/core/lib/gensync-utils/async";
 import LoadPopUp from "../components/organisms/loadPopUp";
 
 const fireRef = firebase.firestore().collection('locations');
@@ -21,20 +19,6 @@ function getLink(mLat, mLong) {
     return 'https://www.google.com/maps/dir/?api=1&destination=' + mLat + '%2C' + mLong + '&travelmode=bicycling'
 }
 
-function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371e3; // metres
-    const p1 = lat1 * Math.PI/180; // φ, λ in radians
-    const p2 = lat2 * Math.PI/180;
-    const dp = (lat2-lat1) * Math.PI/180;
-    const dl = (lon2-lon1) * Math.PI/180;
-
-    const a = Math.sin(dp/2) * Math.sin(dp/2) +
-        Math.cos(p1) * Math.cos(p2) *
-        Math.sin(dl/2) * Math.sin(dl/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-    return R * c;
-}
 
 function allowed(location, filters) {
     if (location.avg !== 0 && (location.avg < filters.minimumStar || location.avg > filters.maximumStar)) {
@@ -76,7 +60,7 @@ export default function MainMapView() {
     const [ratingsVisible, setRatingsVisible] = useState(false);
     const [filterVisible, setFilterVisible] = useState(false);
     const [checked, setChecked] = useState(false);
-    const [load, setLoad] = useState(false);
+    const [load, setLoad] = useState(true);
 
     const base = {
         'minimumStar': 1,
@@ -109,6 +93,10 @@ export default function MainMapView() {
 
         if (fLoc !== filteredLocations) {
             setFilteredLocations(fLoc);
+            if (!fLoc.map((marker, index) => marker.desc).includes(selectedDesc)) {
+                setSelectedDesc("");
+                setFullScreen('no');
+            }
         }
     }
 
@@ -117,7 +105,13 @@ export default function MainMapView() {
         myFunction().then(() => {
             setLoad(false);
         });
-    }, [filters.minimumStar, filters.maximumStar, filters.minimumCap, filters.needsShelter, locations])
+    }, [filters.minimumStar, filters.maximumStar, filters.minimumCap, filters.needsShelter]);
+
+    useEffect(() => {
+        myFunction().then(() => {
+            setLoad(false);
+        });
+    }, [locations]);
 
     useEffect(() => {
         firebase.firestore()
@@ -198,10 +192,6 @@ export default function MainMapView() {
                 setGeoLong(location.coords.longitude);
                 setDone(true);
 
-                if (getDistance(marker.coord.latitude, marker.coord.longitude, geoLat, geoLong) < 10) {
-                    setEnabled(true);
-                }
-
             }}
         />
     ))
@@ -227,7 +217,10 @@ export default function MainMapView() {
     useEffect(() => {
         fireRef
             .orderBy('desc')
-            .onSnapshot(querySnapshot => onResult(querySnapshot, setLocations, locations), onError)
+            .onSnapshot(querySnapshot => {
+                onResult(querySnapshot, setLocations, locations.length);
+            }
+                , onError)
     }, [])
 
     return (
@@ -300,7 +293,7 @@ export default function MainMapView() {
                     destination={{ latitude: currentLat, longitude: currentLong }}
                     apikey={"AIzaSyDx-ARe9YIdlEyEzI8-KFaS2BnSCAXIp_I"}
                     mode={"BICYCLING"}
-                    strokeWidth={selectedDesc === '' && !done? 0 : 5}
+                    strokeWidth={selectedDesc === '' || !done? 0 : 5}
                     strokeColor="hotpink"
                     onReady={result => {
                         setDuration(Math.round(result.duration))
@@ -319,7 +312,7 @@ export default function MainMapView() {
                 right:12,
                 alignSelf: 'flex-end',
                 backgroundColor:
-                    filters.minimumCap === base.minimumCap &&
+                    (filters.minimumCap === base.minimumCap || filters.minimumCap === "0" || filters.minimumCap === 0) &&
                     filters.minimumStar === base.minimumStar &&
                     filters.maximumStar === base.maximumStar &&
                     filters.needsShelter === base.needsShelter &&
@@ -331,18 +324,24 @@ export default function MainMapView() {
                 borderWidth:0,
                 elevation:15,
                 alignContent:'center',
-                justifyContent:'center'
+                justifyContent:'center',
+                opacity: fullScreen === 'full' ? 0 : 1,
             }}
                 onPress={() => {
-                    setFilterVisible(true);
-                    // console.log(filters);
-                    // console.log(base);
+                    if (fullScreen !== 'full') {
+                        setFilterVisible(true);
+                    }
                 }}
             >
                     <Image
                         source={require('../assets/images/filter-icon.png')}
                         style={{alignSelf: 'center', width: '60%', height: '60%'}}
-                        tintColor={'#666666'}
+                        tintColor={(filters.minimumCap === base.minimumCap) &&
+                        filters.minimumStar === base.minimumStar &&
+                        filters.maximumStar === base.maximumStar &&
+                        filters.needsShelter === base.needsShelter &&
+                        filters.minimumReviews === base.minimumReviews ?
+                            '#666666' : '#dddddd'}
                     />
             </Pressable>
         </View>

@@ -1,4 +1,4 @@
-import {FlatList, Image, Modal, Pressable, StyleSheet, Text, View} from "react-native";
+import {FlatList, Image, Modal, Pressable, StyleSheet, Text, View, ViewComponent} from "react-native";
 import StarRating from "../molecules/starRating";
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {useState} from "react";
@@ -29,7 +29,10 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                     <Text style={{textAlign: 'right'}}>{getTime(item.createdAt)}</Text>
                 </View>
             </View>
-            <Text>{item.comment}</Text>
+            <Text
+            style={{
+                height: item.comment === "" ? 0 : 'auto',
+            }}>{item.comment}</Text>
         </View>
     );
 
@@ -166,7 +169,7 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                         </Pressable>
                         <Text numberOfLines={1} ellipsizeMode='tail'
                               style={styles.sectionTitle}>{desc}</Text>
-                        <View style={{flexDirection:'row', paddingTop: 5}}>
+                        <View style={{flexDirection:'row', paddingTop: 5, flex: 1}}>
                             <Image source={require('../../assets/images/bike-icon.png')}
                                    style={styles.attributeIcon}/>
                             <Text style={styles.attributeText}>{`${duration} min`}</Text>
@@ -180,7 +183,7 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                                 {getTime(createdAt)}
                             </Text>
                         </View>
-                        <View style={{flexDirection:'row', paddingTop: 5}}>
+                        <View style={{flexDirection:'row', paddingTop: 5, flex: 1}}>
                             <Image source={require('../../assets/images/bike-park-icon.png')}
                                    style={styles.attributeIcon}/>
                             <Text style={{
@@ -192,8 +195,10 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                             <Pressable style={{
                                 fontSize: 18,
                                 flex:4,
-                                padding: 5,
+                                padding: 3,
                                 alignItems: 'center',
+                                justifyContent: 'center',
+                                justifyItems: 'center',
                                 fontWeight: 'bold',
                                 color:'black',
                                 borderRadius: 20,
@@ -202,13 +207,20 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                                 <Text style={styles.text}>{liveFree === 100 ? "FULL" : liveFree === 50? "SOME" : "EMPTY"}</Text>
                             </Pressable>
                         </View>
-                        <View style={{flexDirection: 'row', paddingTop: 10}}>
+                        <View style={{
+                            flexDirection: 'row',
+                            paddingTop: 5,
+                            flex: 1,
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
                             <Image source={require('../../assets/images/bike-shelter.png')}
-                                   style={{width: 25, height: 25, alignContent: 'flex-start'}}/>
+                                   style={{width: 25, height: 25, flex: 2, resizeMode: 'contain'}}/>
                             <Image source={shelter ?
                                 require('../../assets/images/tick-icon.png') :
                                 require('../../assets/images/cross-icon.png')}
-                                   style={{width: 20, height:20, marginHorizontal: 5}}/>
+                                   style={{width: 25, height:25, paddingHorizontal: 5, flex: 2, resizeMode: 'contain', alignSelf: 'center'}}/>
 
                             <Pressable style={styles.button}
                                        onPress={() => Linking.openURL(link)}
@@ -221,7 +233,10 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                 <View style={styles.copyLocation}>
                     <Image source={require('../../assets/images/parking-marker.png')}
                            style={{width: 25, height: 25, alignContent: 'flex-start'}}/>
-                    <Text style={styles.attributeText}>{lat.toFixed(6)}, {long.toFixed(6)}</Text>
+                    <Text style={{fontSize: 15,
+                        flex: 1,
+                        letterSpacing: 0,
+                        paddingHorizontal: 5}}>Copy Address to clipboard</Text>
                     <Pressable style={{
                         alignItems: 'center',
                         width: '27%',
@@ -243,19 +258,21 @@ const InfoPopup = ({lat, long, desc, image, numStars, numReviews, fullscreen, se
                                style={{width: 20, height: 20, alignContent: 'flex-start'}}/>
                     </Pressable>
                 </View>
-                <Pressable
-                    style={styles.updateButtons} onPress={() => {
-                    setCloseVisible(true);
-                }}>
-                    <Text>UPDATE CAPACITY</Text>
-                </Pressable>
+                <View style={styles.copyLocation}>
+                    <Pressable
+                        style={styles.updateButtons} onPress={() => {
+                        setCloseVisible(true);
+                    }}>
+                        <Text style={styles.text}>UPDATE CAPACITY</Text>
+                    </Pressable>
 
-                <Pressable
-                    style={styles.updateButtons} onPress={() => {
-                    setRatingsVisible(true);
-                }}>
-                    <Text>REVIEW</Text>
-                </Pressable>
+                    <Pressable
+                        style={styles.updateButtons} onPress={() => {
+                        setRatingsVisible(true);
+                    }}>
+                        <Text style={styles.text}>REVIEW</Text>
+                    </Pressable>
+                </View>
 
                 <Text style={styles.ratingsTitle}>Reviews</Text>
                 <Text style={{
@@ -316,9 +333,10 @@ export const styles = StyleSheet.create({
         elevation: 5
     },
     button: {
-        flex:1,
+        flex:6,
         alignItems: 'center',
-        width: '50%',
+        width: '100%',
+        height: 30,
         alignContent: 'flex-end',
         justifyContent: 'flex-end',
         paddingVertical: 5,
@@ -334,6 +352,7 @@ export const styles = StyleSheet.create({
     attributeText: {
         fontSize: 18,
         flex:4,
+        letterSpacing: 0.25,
         paddingHorizontal: 5
     },
     text: {
@@ -356,6 +375,13 @@ export const styles = StyleSheet.create({
         color: 'black',
         paddingTop: 20,
     },
+    copyText: {
+        fontSize: 14,
+        letterSpacing: 0.25,
+        color: 'black',
+        paddingTop: 20,
+        paddingHorizontal: 20,
+    },
     copyLocation: {
         flexDirection:'row',
         width: '95%',
@@ -365,10 +391,10 @@ export const styles = StyleSheet.create({
     },
     updateButtons: {
         alignItems: 'center',
-        width: '90%',
+        width: '46%',
         alignContent: 'flex-start',
         paddingVertical: 10,
-        marginLeft: 0,
+        marginHorizontal: 10,
         marginVertical: 10,
         borderRadius: 20,
         backgroundColor: '#8969ff',

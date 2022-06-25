@@ -18,8 +18,13 @@ function FilterPopUp({filterVisible, setFilterVisible, filters, setFilter}) {
     const [shelter, setShelter] = useState(filters.needsShelter);
     const [minStars, onChangeMinStars] = useState(filters.minimumStar);
     const [maxStars, onChangeMaxStars] = useState(filters.maximumStar);
-    const [minCapacity, onChangeCapacity] = useState(filters.minimumCap);
+    const [minCapacity, setMinCapacity] = useState(filters.minimumCap);
 
+    function handleCapacity(text) {
+        if (/^\d+$/.test(text) || text === "") {
+            setMinCapacity(text);
+        }
+    }
     return (
         <Modal
         animationType="none"
@@ -52,7 +57,8 @@ function FilterPopUp({filterVisible, setFilterVisible, filters, setFilter}) {
                             padding: 10,
                             alignItems: "center",
                             elevation: 2,
-                            borderWidth: 0,
+                            borderWidth: 5,
+                            borderColor: '#dddddd'
                         }}>
                             <View style={{
                                 flexDirection: 'row',
@@ -110,10 +116,18 @@ function FilterPopUp({filterVisible, setFilterVisible, filters, setFilter}) {
                                 <TextInput
                                     style={{
                                         marginHorizontal: 8,
+                                        borderRadius: 10,
+                                        width: 40,
+                                        backgroundColor: '#dddddd',
+                                        paddingVertical: 0,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        textAlign: 'center'
                                     }}
+                                    maxLength={3}
                                     keyboardType = 'numeric'
                                     placeholder="0"
-                                    onChangeText={onChangeCapacity}
+                                    onChangeText={handleCapacity}
                                     value={minCapacity.toString()}
                                 />
                             </View>
@@ -187,106 +201,84 @@ function FilterPopUp({filterVisible, setFilterVisible, filters, setFilter}) {
 
                                 </View>
                             </View>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignSelf: 'flex-start',
-                                alignItems: 'center',
-                                left: 20,
-                                paddingTop: 15,
-                            }}>
-                                <Text
-                                    style={{
-                                        alignSelf: 'center'
-                                    }}>
-                                    Maximum Stars
-                                </Text>
-
-                                <View style={{
-                                    flexDirection: 'row',
-                                    paddingBottom: 0,
-                                    flex: 1,
-                                    paddingRight: 30,
-                                    justifyContent: 'flex-end',
-                                }}>
-                                    <Pressable onPress={() => {
-                                        onChangeMaxStars(1);
-                                    }}>
-                                        <Image
-                                            style={filterStyles.star}
-                                            source={maxStars >= 1 ? require('../../assets/images/star-100.png') : require('../../assets/images/star-0.png')}
-
-                                        />
-                                    </Pressable>
-
-                                    <Pressable onPress={() => {
-                                        onChangeMaxStars(2);
-                                    }}>
-                                        <Image
-                                            style={filterStyles.star}
-                                            source={maxStars >= 2 ? require('../../assets/images/star-100.png') : require('../../assets/images/star-0.png')}
-
-                                        />
-                                    </Pressable>
-
-                                    <Pressable onPress={() => {
-                                        onChangeMaxStars(3);
-                                    }}>
-                                        <Image
-                                            style={filterStyles.star}
-                                            source={maxStars >= 3 ? require('../../assets/images/star-100.png') : require('../../assets/images/star-0.png')}
-
-                                        />
-                                    </Pressable>
-
-                                    <Pressable onPress={() => {
-                                        onChangeMaxStars(4);
-                                    }}>
-                                        <Image
-                                            style={filterStyles.star}
-                                            source={maxStars >= 4 ? require('../../assets/images/star-100.png') : require('../../assets/images/star-0.png')}
-
-                                        />
-                                    </Pressable>
-
-                                    <Pressable onPress={() => {
-                                        onChangeMaxStars(5);
-                                    }}>
-                                        <Image
-                                            style={filterStyles.star}
-                                            source={maxStars >= 5 ? require('../../assets/images/star-100.png') : require('../../assets/images/star-0.png')}
-
-                                        />
-                                    </Pressable>
-
-                                </View>
-                            </View>
                             <View
                                 style={{
                                     alignSelf: 'flex-end',
                                     justifyContent: 'flex-end',
-                                    flex: 1
+                                    alignItems: 'flex-end',
+                                    flex: 1,
+                                    flexDirection: 'row'
                             }}
                             >
                                 <Pressable
                                     style={{
                                         alignItems: 'center',
-                                        width: '100%',
-                                        alignContent: 'flex-end',
+                                        height: 40,
+                                        width: '30%',
+                                        alignContent: 'flex-start',
                                         padding: 10,
+                                        margin: 10,
+                                        borderRadius: 20,
+                                        backgroundColor: '#888888',}}
+                                    onPress={() => {
+                                        setMinCapacity(0);
+                                        onChangeMinStars(1);
+                                        onChangeMaxStars(5);
+                                        setShelter(false);
+                                        setFilter({
+                                            'minimumStar': 1,
+                                            'maximumStar': 5,
+                                            'minimumCap': 0,
+                                            'minimumReviews': 0,
+                                            'needsShelter': false,
+                                        });
+                                    }}>
+                                    <Text
+                                        style={{
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >CLEAR</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={{
+                                        alignItems: 'center',
+                                        height: 40,
+                                        width: '30%',
+                                        alignContent: 'flex-end',
+                                        paddingVertical: 10,
                                         margin: 10,
                                         borderRadius: 20,
                                         backgroundColor: '#8969ff',}}
                                     onPress={() => {
-                                        setFilter({
-                                            'minimumStar': minStars,
-                                            'maximumStar': maxStars,
-                                            'minimumCap': minCapacity,
-                                            'minimumReviews': 0,
-                                            'needsShelter': shelter,
-                                        });
+                                        console.log("min capacity: " + minCapacity + "ksjbd")
+                                        if (minCapacity === "") {
+                                            console.log("hello");
+                                            setMinCapacity(0);
+                                            setFilter({
+                                                'minimumStar': minStars,
+                                                'maximumStar': maxStars,
+                                                'minimumCap': 0,
+                                                'minimumReviews': 0,
+                                                'needsShelter': shelter,
+                                            });
+                                        } else{
+                                            setFilter({
+                                                'minimumStar': minStars,
+                                                'maximumStar': maxStars,
+                                                'minimumCap': minCapacity,
+                                                'minimumReviews': 0,
+                                                'needsShelter': shelter,
+                                            });
+                                        }
                                         setFilterVisible(false);
                                 }}>
-                                    <Text>SUBMIT</Text>
+                                    <Text
+                                        style={{
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >SUBMIT</Text>
                                 </Pressable>
                             </View>
                         </View>

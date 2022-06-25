@@ -1,18 +1,20 @@
 import {firebase} from "./config";
 import {Keyboard} from "react-native";
 
-export function onResult(querySnapshot, setLocations, currentLocations) {
-
-
-    const locations = []
+export function onResult(querySnapshot, setLocations, numLocs) {
+    const locs = []
     querySnapshot.forEach(async (doc) => {
         const {coord, desc} = doc.data();
-        locations.push({
+        locs.push({
             id: doc.id, coord, desc
         })
     })
-    if (locations !== currentLocations) {
-        setLocations(locations);
+
+    if (locs.length !== numLocs) {
+        console.log(locs.length);
+        console.log(numLocs);
+        console.log("changed");
+        setLocations(locs);
     }
 
 }
@@ -41,7 +43,7 @@ export function addReview(id, username, rating, comment) {
     const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
     const review = {
-        username: username,
+        username: username === "" ? "Anonymous" : username,
         rating: rating,
         comment: comment,
         createdAt: timestamp,
