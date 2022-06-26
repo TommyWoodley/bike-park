@@ -10,7 +10,7 @@
     "splash": {
       "image": "./src/assets/images/bike-park-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#EAE6D8"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -28,7 +28,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/bike-park-logo.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#EAE6D8"
       },
       "config": {
         "googleMaps": {
