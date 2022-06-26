@@ -11,9 +11,6 @@ export function onResult(querySnapshot, setLocations, numLocs) {
     })
 
     if (locs.length !== numLocs) {
-        console.log(locs.length);
-        console.log(numLocs);
-        console.log("changed");
         setLocations(locs);
     }
 

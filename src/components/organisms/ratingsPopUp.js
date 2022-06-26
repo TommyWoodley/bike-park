@@ -61,7 +61,7 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
                                        alignSelf: 'flex-end',
                                    }}/>
                         </Pressable>
-                        <Text style={{fontSize: 18,
+                        <Text style={{fontSize: 16,
                             fontWeight: '600',
                             color: '#000000',
                             paddingTop: 0,
