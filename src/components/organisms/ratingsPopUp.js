@@ -48,7 +48,10 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
                     <View style={{flex: 2}}>
                         <Pressable
                             onPress={() => {
-                                setRatingsVisible(false)
+                                onChangeUsername('');
+                                onChangeText('');
+                                setRating(0);
+                                setRatingsVisible(false);
                             }
                             }>
                             <Image source={require('../../assets/images/cross-icon.png')}
@@ -146,7 +149,12 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
                     setRating(0);
                     setRatingsVisible(false);
                 }}>
-                    <Text>SUBMIT</Text>
+                    <Text
+                        style={{
+                            color: 'white',
+                            fontWeight: 'bold',
+                        }}
+                    >SUBMIT</Text>
                 </Pressable>
             </KeyboardAvoidingView>
         </View>
