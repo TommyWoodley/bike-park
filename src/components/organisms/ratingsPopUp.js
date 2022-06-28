@@ -50,7 +50,7 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
                             onPress={() => {
                                 onChangeUsername('');
                                 onChangeText('');
-                                setRating(0);
+                                setRating(1);
                                 setRatingsVisible(false);
                             }
                             }>
@@ -146,7 +146,7 @@ function RatingsPopup({id, desc, image, ratingsVisible, setRatingsVisible}) {
                     addReview(id, username, rating, text);
                     onChangeUsername('');
                     onChangeText('');
-                    setRating(0);
+                    setRating(1);
                     setRatingsVisible(false);
                 }}>
                     <Text
